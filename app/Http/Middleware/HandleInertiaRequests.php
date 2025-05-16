@@ -4,6 +4,8 @@ namespace App\Http\Middleware;
 
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\File;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
 
@@ -51,6 +53,34 @@ class HandleInertiaRequests extends Middleware
                 'location' => $request->url(),
             ],
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error' => fn() => $request->session()->get('error'),
+                'warning' => fn() => $request->session()->get('warning'),
+                'info' => fn() => $request->session()->get('info'),
+            ],
+            /**
+             * Comparte las traducciones del archivo JSON del idioma actual con el frontend.
+             *
+             * @return array<string, string>|null
+             */
+            'translations' => function() {
+                $locale = App::getLocale();
+                $jsonFilePath = lang_path("{$locale}.json");
+
+                $translations = [];
+
+                if(File::exists($jsonFilePath)) {
+                    $translations = json_decode(File::get($jsonFilePath), true) ?: [];
+                }
+                return $translations;
+            },
+            /**
+             * Comparte el locale actual con el frontend.
+             *
+             * @return string
+             */
+            'current_locale' => App::getLocale(),
         ];
     }
 }
