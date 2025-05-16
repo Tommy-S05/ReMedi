@@ -24,6 +24,9 @@ export interface SharedData extends PageProps {
     auth: Auth;
     ziggy: Config & { location: string };
     sidebarOpen: boolean;
+    flash: FlashMessages;
+    translations: Record<string, string>;
+    current_locale: string;
 }
 
 export interface User {
@@ -34,6 +37,17 @@ export interface User {
     email_verified_at: string | null;
     created_at: string;
     updated_at: string;
+}
+
+/**
+ * Defines the structure for flash messages passed from the backend.
+ * Each property is optional as not all responses will have all types of messages.
+ */
+export interface FlashMessages {
+    success?: string;
+    error?: string;
+    warning?: string;
+    info?: string;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;
