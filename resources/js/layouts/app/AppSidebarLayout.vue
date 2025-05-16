@@ -19,6 +19,7 @@ withDefaults(defineProps<Props>(), {
         <AppSidebar />
         <AppContent variant="sidebar">
             <AppSidebarHeader :breadcrumbs="breadcrumbs" />
+            <slot name="page_content_header" />
             <slot />
         </AppContent>
     </AppShell>
