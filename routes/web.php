@@ -21,6 +21,9 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('medications/{medication}/edit', [Controllers\MedicationController::class, 'edit'])->name('medications.edit');
     Route::put('medications/{medication}', [Controllers\MedicationController::class, 'update'])->name('medications.update');
     Route::delete('medications/{medication}', [Controllers\MedicationController::class, 'destroy'])->name('medications.destroy');
+    
+    // Rutas para Prescripciones
+    Route::resource('prescriptions', Controllers\PrescriptionController::class);
 });
 
 require __DIR__ . '/settings.php';

@@ -153,6 +153,7 @@ return [
     'uppercase'              => 'El campo :attribute debe estar en mayúscula.',
     'url'                    => 'El campo :attribute debe ser una URL válida.',
     'uuid'                   => 'El campo :attribute debe ser un UUID válido.',
+    'medication_not_found_for_user' => 'El medicamento seleccionado no fue encontrado o no le pertenece.',
     'values'                 => [
         'schedules' => [
             '*' => [

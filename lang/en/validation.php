@@ -153,6 +153,7 @@ return [
     'uppercase'              => 'The :attribute field must be uppercase.',
     'url'                    => 'The :attribute field must be a valid URL.',
     'uuid'                   => 'The :attribute field must be a valid UUID.',
+    'medication_not_found_for_user' => 'The selected medication was not found or does not belong to you.',
     'values'                 => [
         'frequency_type' => [
             'hourly_interval'  => 'hourly interval',

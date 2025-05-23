@@ -30,13 +30,34 @@ class MedicationService
         $medications = $user->medications()
             ->with([
                 'schedules' => function ($query) {
-                    $query->orderBy('time_to_take', 'asc')->orderBy('start_date', 'asc');
+                    $query->orderBy('time_to_take', 'asc')
+                        ->orderBy('start_date', 'asc');
                 }
             ])
             ->latest()
             ->get();
 
         return $medications;
+    }
+
+    /**
+     * Retrieves just the necessary medication data for selection dropdowns.
+     *
+     * @param User $user The user whose medications to retrieve.
+     * @return Collection<int, array<string, string|int>>
+     */
+    //  * @return Collection<int, array<string, mixed>>
+    public function getMedicationSelectOptionsForUser(User $user): Collection
+    {
+        return $user->medications()
+            ->select('id', 'name')
+            ->latest()
+            ->get()
+            ->map(fn($medication) => [
+                'id' => $medication->id,
+                'name' => $medication->name,
+                // Otros campos necesarios para el selector
+            ]);
     }
 
     /**
