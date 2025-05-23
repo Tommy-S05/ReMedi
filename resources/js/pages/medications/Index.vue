@@ -30,7 +30,7 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const { t, currentLocale } = useTranslations();
+const { t, formatDate } = useTranslations();
 
 const showDeleteDialog = ref(false);
 const medicationToDelete = ref<Medication | null>(null);
@@ -59,21 +59,6 @@ const formatDaysOfWeek = (days: number[] | null | undefined): string => {
         .map((dayIndex) => dayNames[dayIndex] || String(dayIndex))
         .sort((a, b) => dayNames.indexOf(a) - dayNames.indexOf(b))
         .join(', ');
-};
-
-/**
- * Formatea una cadena de fecha (YYYY-MM-DD) a un formato localizado y legible.
- * @param {string | null | undefined} dateString - Fecha en formato YYYY-MM-DD.
- * @returns {string} Fecha formateada o "-".
- */
-const formatDate = (dateString: string | null | undefined): string => {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString(currentLocale.value === 'es' ? 'es-DO' : 'en-US', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
 };
 
 /**

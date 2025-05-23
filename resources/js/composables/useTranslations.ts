@@ -1,6 +1,6 @@
+import type { SharedData } from '@/types';
 import { usePage } from '@inertiajs/vue3';
 import { computed, type ComputedRef } from 'vue'; // Importar ComputedRef
-import type { SharedData } from '@/types';
 
 /**
  * Interface para el retorno del composable `useTranslations`.
@@ -18,6 +18,13 @@ interface UseTranslationsReturn {
      * @type {ComputedRef<'en' | 'es'>}
      */
     currentLocale: ComputedRef<SharedData['current_locale']>;
+    /**
+     * Formatea una cadena de fecha (YYYY-MM-DD) a un formato localizado y legible.
+     * @param {string | null | undefined} dateString - Fecha en formato YYYY-MM-DD.
+     * @param {string} [localeOverride] - Opcional. Un locale específico para usar en el formateo.
+     * @returns {string} Fecha formateada o "-".
+     */
+    formatDate: (dateString: string | null | undefined, localeOverride?: string) => string;
 }
 
 /**
@@ -63,5 +70,41 @@ export function useTranslations(): UseTranslationsReturn {
         return translation;
     };
 
-    return { t, currentLocale };
+    /**
+     * Formatea una cadena de fecha (YYYY-MM-DD) a un formato localizado y legible.
+     * @param {string | null | undefined} dateString - Fecha en formato YYYY-MM-DD.
+     * @param {string} [localeOverride] - Opcional. Un locale específico para usar en el formateo.
+     * @returns {string} Fecha formateada o "-".
+     */
+    const formatDate = (dateString: string | null | undefined, localeOverride?: string): string => {
+        if (!dateString) return '-';
+        try {
+            // El añadir 'T00:00:00' ayuda a que el constructor de Date lo interprete como fecha local
+            // y no como UTC, lo que puede causar problemas de "un día menos" dependiendo de la zona horaria.
+            const date = new Date(dateString);
+            const localeToUse = localeOverride || currentLocale.value;
+
+            // Intl.DateTimeFormat es más robusto para la localización
+            return new Intl.DateTimeFormat(localeToUse === 'es' ? 'es-DO' : 'en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+            }).format(date);
+        } catch (error) {
+            console.error('Error formatting date:', dateString, error);
+            return dateString; // Devolver el original si hay error
+        }
+    };
+
+    // const formatDate = (dateString: string | null | undefined): string => {
+    //     if (!dateString) return '-';
+    //     const date = new Date(dateString);
+    //     return date.toLocaleDateString(currentLocale.value === 'es' ? 'es-DO' : 'en-US', {
+    //         year: 'numeric',
+    //         month: 'short',
+    //         day: 'numeric',
+    //     });
+    // };
+
+    return { t, currentLocale, formatDate };
 }
