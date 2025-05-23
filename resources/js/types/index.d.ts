@@ -1,6 +1,10 @@
 import type { PageProps } from '@inertiajs/core';
 import type { LucideIcon } from 'lucide-vue-next';
 import type { Config } from 'ziggy-js';
+// Re-exportar tipos de modelos para un único punto de importación
+export * from './models/Medication';
+export * from './models/Prescription';
+export * from './models/Schedule';
 
 export interface Auth {
     user: User;

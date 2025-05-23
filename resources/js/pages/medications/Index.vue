@@ -13,46 +13,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslations } from '@/composables/useTranslations';
 import { MedicationScheduleFrequencyEnum } from '@/Enums/MedicationScheduleFrequencyEnum';
-import type { MedicationTypeEnum } from '@/Enums/MedicationTypeEnum';
 import AuthenticatedLayout from '@/layouts/AppLayout.vue';
+import type { Medication, Schedule } from '@/types';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { AlertTriangleIcon, CalendarDaysIcon, ClockIcon, Edit3Icon, InfoIcon, PillIcon, PlusCircleIcon, TagIcon, Trash2Icon } from 'lucide-vue-next'; // TagIcon para el tipo
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
-
-/**
- * Interface para la estructura de un horario de medicamento tal como se recibe del backend.
- */
-interface Schedule {
-    id: number;
-    time_to_take: string;
-    frequency_type: MedicationScheduleFrequencyEnum;
-    frequency_type_label: string;
-    days_of_week?: number[] | null;
-    interval_in_days?: number | null;
-    interval_in_hours?: number | null;
-    start_date: string;
-    end_date?: string | null;
-    is_active: boolean;
-}
-
-/**
- * Interface para la estructura de un medicamento tal como se recibe del backend.
- */
-interface Medication {
-    id: number;
-    name: string;
-    type: MedicationTypeEnum | null;
-    type_label: string | null;
-    dosage: string | null;
-    strength: string | null;
-    quantity: number | null;
-    instructions: string | null;
-    schedules: Schedule[];
-    created_at: string;
-    updated_at: string;
-}
 
 /**
  * Props recibidas por el componente Index de Medicamentos.
@@ -115,7 +82,8 @@ const formatDate = (dateString: string | null | undefined): string => {
  * @returns {string} Una descripción textual del horario.
  */
 const formatScheduleInfo = (schedule: Schedule): string => {
-    let info = `${schedule.time_to_take} - ${t(schedule.frequency_type_label)}`;
+    const frequencyLabel = t(schedule.frequency_type_label ?? '');
+    let info = `${schedule.time_to_take}${frequencyLabel ? ` - ${frequencyLabel}` : ''}`;
 
     if (schedule.frequency_type === MedicationScheduleFrequencyEnum.SPECIFIC_DAYS) {
         // Usar el valor string del enum
