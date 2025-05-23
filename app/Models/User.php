@@ -21,8 +21,10 @@ use Illuminate\Notifications\Notifiable;
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Medication> $medications
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Medication> $medications
  * @property-read int|null $medications_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, Prescription> $prescriptions
+ * @property-read int|null $prescriptions_count
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
@@ -84,5 +86,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function medications(): HasMany
     {
         return $this->hasMany(Medication::class);
+    }
+
+    public function prescriptions(): HasMany
+    {
+        return $this->hasMany(Prescription::class);
     }
 }
