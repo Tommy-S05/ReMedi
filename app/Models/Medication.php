@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use \Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * App\Models\Medication
@@ -27,6 +28,8 @@ use \Illuminate\Database\Eloquent\Collection;
  * @property Carbon|null $updated_at
  * @property-read Collection<int, MedicationSchedule> $schedules
  * @property-read int|null $schedules_count
+ * @property-read Collection<int, Prescription> $prescriptions
+ * @property-read int|null $prescriptions_count
  * @property-read string|null $type_label
  * @property-read User $user
  * @method static \Database\Factories\MedicationFactory factory($count = null, $state = [])
@@ -100,6 +103,18 @@ class Medication extends Model
     public function schedules(): HasMany
     {
         return $this->hasMany(MedicationSchedule::class);
+    }
+
+    /**
+     * The prescriptions that include this medication.
+     *
+     * @return BelongsToMany<Prescription>
+     */
+    public function prescriptions(): BelongsToMany
+    {
+        return $this->belongsToMany(Prescription::class, 'medication_prescription')
+            ->withPivot(['dosage_on_prescription', 'quantity_prescribed', 'instructions_on_prescription'])
+            ->withTimestamps();
     }
 
     /**
