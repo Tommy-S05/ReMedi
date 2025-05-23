@@ -31,7 +31,7 @@ class PrescriptionController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $prescriptions = $this->prescriptionService->getPrescriptionsForUser($user, true);
-        return inertia('prescription/Index', [
+        return inertia('prescriptions/Index', [
             'prescriptions' => $prescriptions,
         ]);
     }

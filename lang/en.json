@@ -340,5 +340,16 @@
     "Wed": "Wed",
     "Whoops!": "Whoops!",
     "Yes": "Yes",
-    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account."
+    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
+    "My Prescriptions": "My Prescriptions",
+    "Create New Prescription": "Create New Prescription",
+    "No Prescriptions Yet": "No Prescriptions Yet",
+    "Get started by creating your first prescription.": "Get started by creating your first prescription.",
+    "Create Prescription": "Create Prescription",
+    "Prescription": "Prescription",
+    "Notes": "Notes",
+    "No medications assigned to this prescription.": "No medications assigned to this prescription.",
+    "Delete Prescription": "Delete Prescription",
+    "Are you sure you want to delete this prescription (:title)? This action cannot be undone.": "Are you sure you want to delete this prescription (:title)? This action cannot be undone.",
+    "Prescriptions": "Prescriptions"
 }
