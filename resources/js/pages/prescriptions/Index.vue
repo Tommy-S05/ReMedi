@@ -16,6 +16,7 @@ import AuthenticatedLayout from '@/layouts/AppLayout.vue';
 import type { BreadcrumbItem, Prescription } from '@/types'; // Importar los tipos actualizados
 import { Head, Link, router } from '@inertiajs/vue3';
 import {
+    AlertTriangleIcon,
     CalendarIcon as CalendarIconLucide,
     Edit3Icon,
     FileTextIcon,
