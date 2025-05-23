@@ -54,10 +54,6 @@ watch(
             if (newFlash.error && newFlash.error !== oldFlash?.error) showToast('error', newFlash.error);
             if (newFlash.warning && newFlash.warning !== oldFlash?.warning) showToast('warning', newFlash.warning);
             if (newFlash.info && newFlash.info !== oldFlash?.info) showToast('info', newFlash.info);
-
-            if (page.props.flash) {
-                (page.props as any).flash = { success: null, error: null, warning: null, info: null };
-            }
         }
     },
     { deep: true },

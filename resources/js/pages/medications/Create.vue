@@ -9,8 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { useTranslations } from '@/composables/useTranslations';
 import { MedicationScheduleFrequencyEnum } from '@/Enums/MedicationScheduleFrequencyEnum';
 import AuthenticatedLayout from '@/layouts/AppLayout.vue';
-import type { BreadcrumbItem, SharedData } from '@/types';
-import { Head, Link, useForm, usePage } from '@inertiajs/vue3';
+import type { BreadcrumbItem } from '@/types';
+import { Head, Link, useForm } from '@inertiajs/vue3';
 import { ArrowLeftIcon, CalendarIcon, ClockIcon, PackageIcon, PillIcon, PlusCircleIcon, Trash2Icon } from 'lucide-vue-next';
 import { computed } from 'vue'; // Importar el composable
 import { toast } from 'vue-sonner';
@@ -34,8 +34,6 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-
-const page = usePage<SharedData>();
 
 const { t } = useTranslations();
 
@@ -154,17 +152,14 @@ function submit() {
     form.post(route('medications.store'), {
         onSuccess: () => {
             toast.success(t('Medication Added!'), {
-                description: t('The medication "{name}" has been successfully saved.', { name: form.name }),
+                description: t('The medication :name has been successfully saved.', { name: form.name }),
                 duration: 5000, // Duración en ms
             });
             form.reset();
         },
         onError: (errors) => {
-            const flash = page.props.flash;
             let errorMessage = t('Please correct the errors in the form.');
-            if (flash.error) {
-                errorMessage = flash.error;
-            } else if (errors.message) {
+            if (errors.message) {
                 errorMessage = errors.message;
             }
 
