@@ -17,7 +17,11 @@ class PrescriptionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => \App\Models\User::inRandomOrder()->first()->id,
+            'title' => $this->faker->optional()->sentence(3),
+            'doctor_name' => $this->faker->optional()->name(),
+            'prescription_date' => $this->faker->optional()->date(),
+            'notes' => $this->faker->optional()->paragraph(),
         ];
     }
 }
