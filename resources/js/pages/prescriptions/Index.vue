@@ -200,7 +200,7 @@ const viewPrescription = (prescriptionId: number) => {
                                     {{ t('Medications') }} ({{ prescription.medications.length }})
                                 </h4>
                                 <ul class="max-h-32 space-y-1.5 overflow-y-auto pr-1">
-                                    {/* Limitar altura y añadir scroll */}
+                                    <!-- Limitar altura y añadir scroll -->
                                     <li
                                         v-for="med in prescription.medications"
                                         :key="med.id"
