@@ -234,7 +234,7 @@ const viewPrescription = (prescriptionId: number) => {
                     </AlertDialogTitle>
                     <AlertDialogDescription>
                         {{
-                            t('Are you sure you want to delete this prescription ({title})? This action cannot be undone.', {
+                            t('Are you sure you want to delete this prescription (:title)? This action cannot be undone.', {
                                 title: prescriptionToDelete.title || '#' + prescriptionToDelete.id,
                             })
                         }}
