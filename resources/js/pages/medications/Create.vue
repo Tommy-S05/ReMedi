@@ -514,7 +514,7 @@ const toggleDay = (scheduleIndex: number, dayValue: number): void => {
                                         variant="ghost"
                                         @click="removeSchedule(schedIdx)"
                                         v-if="form.schedules.length > 1"
-                                        class="text-muted-foreground hover:text-destructive hover:bg-destructive/10 absolute top-3 right-3 h-auto cursor-pointer rounded-full p-1.5 transition-all duration-200 hover:scale-110 active:scale-90"
+                                        class="text-muted-foreground hover:text-destructive hover:bg-destructive/10 absolute top-3 right-3 h-auto rounded-full p-1.5 transition-all duration-200 hover:scale-110 active:scale-90"
                                         :aria-label="t('Remove schedule')"
                                     >
                                         <Trash2Icon class="h-4 w-4" />
@@ -522,7 +522,7 @@ const toggleDay = (scheduleIndex: number, dayValue: number): void => {
                                 </div>
                             </section>
 
-                            <footer class="border-border/60 flex items-center justify-end space-x-6 border-t pt-6">
+                            <footer class="border-border/60 flex items-center justify-center xs:justify-end xs:space-x-6 border-t pt-6 flex-col-reverse xs:flex-row gap-3">
                                 <Link
                                     :href="route('medications.index')"
                                     class="text-muted-foreground hover:text-primary dark:hover:text-remedi-light-blue text-sm font-medium transition-colors duration-200"
@@ -533,7 +533,7 @@ const toggleDay = (scheduleIndex: number, dayValue: number): void => {
                                     type="submit"
                                     :disabled="form.processing"
                                     size="lg"
-                                    class="min-w-[150px] cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-[0.98]"
+                                    class="min-w-[150px] transition-all duration-200 hover:shadow-lg active:scale-[0.98] w-full xs:w-auto"
                                 >
                                     <span v-if="form.processing" class="mr-2 animate-spin">
                                         <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
