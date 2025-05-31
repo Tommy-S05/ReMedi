@@ -11,8 +11,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Carbon;
 
 /**
- *
- *
  * @property int $id
  * @property int $user_id
  * @property string|null $title
@@ -25,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $medications_count
  * @property-read Carbon|null $prescription_date_formatted
  * @property-read User $user
+ *
  * @method static \Database\Factories\PrescriptionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription newQuery()
@@ -37,6 +36,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class Prescription extends Model
@@ -91,8 +91,8 @@ class Prescription extends Model
     public function medications(): BelongsToMany
     {
         return $this->belongsToMany(Medication::class, 'medication_prescription')
-                    ->withPivot(['dosage_on_prescription', 'quantity_prescribed', 'instructions_on_prescription'])
-                    ->withTimestamps();
+            ->withPivot(['dosage_on_prescription', 'quantity_prescribed', 'instructions_on_prescription'])
+            ->withTimestamps();
     }
 
     /**
