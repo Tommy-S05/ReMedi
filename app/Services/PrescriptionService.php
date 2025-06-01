@@ -60,18 +60,17 @@ class PrescriptionService
     public function updatePrescription(Prescription $prescription, array $prescriptionData, ?array $medicationDetails = null): Prescription
     {
         try {
-            DB::beginTransaction();
+            return DB::transaction(function () use ($prescription, $prescriptionData, $medicationDetails) {
+                /** @var Prescription $prescription */
+                $prescription->update($prescriptionData);
 
-            $prescription->update($prescriptionData);
+                if ($medicationDetails !== null) {
+                    $this->syncMedicationsForPrescription($prescription, $medicationDetails);
+                }
 
-            if ($medicationDetails !== null) { // Permitir enviar un array vacío para desasociar todos
-                $this->syncMedicationsForPrescription($prescription, $medicationDetails);
-            }
-
-            DB::commit();
-            return $prescription->fresh(['medications']); // Recargar con relaciones actualizadas
+                return $prescription->load('medications');
+            });
         } catch (Throwable $e) {
-            DB::rollBack();
             Log::error(__METHOD__ . ' failed: ' . $e->getMessage(), [
                 'exception' => $e,
                 'prescription_id' => $prescription->id,
