@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class UpdatePrescriptionRequest extends FormRequest
 {
@@ -28,9 +30,18 @@ class UpdatePrescriptionRequest extends FormRequest
             'prescription_date' => ['nullable', 'date'],
             'notes' => ['nullable', 'string'],
             'medication_ids' => ['sometimes', 'array'],
-            'medication_ids.*' => ['integer', 'exists:medications,id'],
+            'medication_ids.*' => [
+                'integer',
+                Rule::exists('medications', 'id')
+                    ->where(fn($query) => $query->where('user_id', Auth::id())),
+            ],
             'medication_details' => ['sometimes', 'array'],
-            'medication_details.*.medication_id' => ['required_with:medication_details', 'integer', 'exists:medications,id'],
+            'medication_details.*.medication_id' => [
+                'required_with:medication_details',
+                'integer',
+                Rule::exists('medications', 'id')
+                    ->where(fn($query) => $query->where('user_id', Auth::id())),
+            ],
             'medication_details.*.dosage_on_prescription' => ['nullable', 'string', 'max:255'],
             'medication_details.*.quantity_prescribed' => ['nullable', 'string', 'max:255'],
             'medication_details.*.instructions_on_prescription' => ['nullable', 'string'],
