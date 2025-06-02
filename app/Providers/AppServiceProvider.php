@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
      */
     private function configureCommands(): void
     {
-        DB::prohibitDestructiveCommands(!App::isProduction());
+        DB::prohibitDestructiveCommands(App::isProduction());
     }
 
     /**
