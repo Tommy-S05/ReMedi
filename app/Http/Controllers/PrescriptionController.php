@@ -87,10 +87,28 @@ class PrescriptionController extends Controller
 
     /**
      * Display the specified resource.
+     * (Podríamos tener una vista Show o redirigir a Edit)
+     *
+     * @param Prescription $prescription
+     * @return \Inertia\Response|\Illuminate\Http\RedirectResponse
      */
-    public function show(Prescription $prescription)
+    public function show(Prescription $prescription): Response
     {
-        //
+        Gate::authorize('view', $prescription);
+        $prescription->load('medications.schedules');
+
+        // Para que los labels de los enums de Medication y MedicationSchedule se carguen:
+        // $prescription->medications->transform(function (Medication $medication) {
+        //     // Los accessors de Medication y MedicationSchedule se encargarán de los labels
+        //     return $medication;
+        // });
+
+
+        return Inertia::render('prescriptions/Show', [ // Necesitarás crear esta vista
+            'prescription' => $prescription,
+        ]);
+        // Alternativamente, redirigir a la edición:
+        // return redirect()->route('prescriptions.edit', $prescription);
     }
 
     /**
