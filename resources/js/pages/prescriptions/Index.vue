@@ -74,7 +74,6 @@ const handleDeletePrescription = () => {
         onSuccess: () => {
             prescriptionToDelete.value = null;
             showDeleteDialog.value = false;
-            // Toast manejado globalmente por mensaje flash
         },
         onError: (errors) => {
             const errorMessages = Object.values(errors).join(' ');

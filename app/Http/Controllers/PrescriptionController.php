@@ -141,9 +141,19 @@ class PrescriptionController extends Controller
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param Prescription $prescription
+     * @return \Illuminate\Http\RedirectResponse
      */
-    public function destroy(Prescription $prescription)
+    public function destroy(Prescription $prescription): RedirectResponse
     {
-        //
+        Gate::authorize('delete', $prescription);
+        try {
+            $this->prescriptionService->deletePrescription($prescription);
+
+            return redirect()->route('prescriptions.index')->with('success', __('messages.prescription_deleted_successfully'));
+        } catch (Throwable $e) {
+            return back()->with('error', __('messages.failed_to_delete_prescription'));
+        }
     }
 }
