@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 /**
@@ -11,6 +13,21 @@ enum MedicationScheduleFrequencyEnum: string
     case SPECIFIC_DAYS = 'specific_days';
     case INTERVAL_IN_DAYS = 'interval_in_days';
     case HOURLY_INTERVAL = 'hourly_interval';
+
+    /**
+     * Get all cases formatted for a select input.
+     *
+     * @return array<int, array{value: string, label: string}>
+     */
+    public static function forSelect(): array
+    {
+        return collect(self::cases())->map(function ($case) {
+            return [
+                'value' => $case->value,
+                'label' => $case->label(),
+            ];
+        })->all();
+    }
 
     /**
      * Get the human-readable label for the frequency.
@@ -25,20 +42,5 @@ enum MedicationScheduleFrequencyEnum: string
             self::INTERVAL_IN_DAYS => 'Every X days',
             self::HOURLY_INTERVAL => 'Every X hours',
         };
-    }
-
-    /**
-     * Get all cases formatted for a select input.
-     *
-     * @return array<int, array{value: string, label: string}>
-     */
-    public static function forSelect(): array
-    {
-        return collect(self::cases())->map(function($case) {
-            return [
-                'value' => $case->value,
-                'label' => $case->label(),
-            ];
-        })->all();
     }
 }

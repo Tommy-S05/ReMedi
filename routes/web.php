@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-Route::get('/', function() {
+Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function() {
-    Route::get('dashboard', function() {
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
@@ -21,7 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function() {
     Route::get('medications/{medication}/edit', [Controllers\MedicationController::class, 'edit'])->name('medications.edit');
     Route::put('medications/{medication}', [Controllers\MedicationController::class, 'update'])->name('medications.update');
     Route::delete('medications/{medication}', [Controllers\MedicationController::class, 'destroy'])->name('medications.destroy');
-    
+
     // Rutas para Prescripciones
     Route::resource('prescriptions', Controllers\PrescriptionController::class);
 });

@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use App\Enums\MedicationScheduleFrequencyEnum;
 use App\Enums\MedicationTypeEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Validator;
 
-class UpdateMedicationRequest extends FormRequest
+final class UpdateMedicationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -16,6 +17,7 @@ class UpdateMedicationRequest extends FormRequest
     public function authorize(): bool
     {
         $medication = $this->route('medication');
+
         return $medication && $this->user()->can('update', $medication);
     }
 

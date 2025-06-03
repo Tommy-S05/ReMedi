@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
-use App\Models\Medication;
-use App\Models\Prescription;
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Http\Requests\UpdatePrescriptionRequest;
+use App\Models\Medication;
+use App\Models\Prescription;
 use App\Models\User;
 use App\Services\MedicationService;
 use App\Services\PrescriptionService;
@@ -16,14 +18,12 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Throwable;
 
-class PrescriptionController extends Controller
+final class PrescriptionController extends Controller
 {
     public function __construct(
         protected readonly PrescriptionService $prescriptionService,
-        protected readonly MedicationService   $medicationService,
-    )
-    {
-    }
+        protected readonly MedicationService $medicationService,
+    ) {}
 
     /**
      * Display a listing of the resource.
@@ -36,6 +36,7 @@ class PrescriptionController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $prescriptions = $this->prescriptionService->getPrescriptionsForUser($user, true);
+
         return inertia('prescriptions/Index', [
             'prescriptions' => $prescriptions,
         ]);
@@ -60,8 +61,9 @@ class PrescriptionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param StorePrescriptionRequest $request
+     * @param  StorePrescriptionRequest  $request
      * @return RedirectResponse
+     *
      * @throws Throwable
      */
     public function store(StorePrescriptionRequest $request): RedirectResponse
@@ -72,8 +74,8 @@ class PrescriptionController extends Controller
         $medicationDetails = $request->safe()->input('medication_details', []);
 
         // Si se envían medication_ids y no medication_details, transformarlos
-        if(empty($medicationDetails) && !empty($request->input('medication_ids'))) {
-            $medicationDetails = collect($request->input('medication_ids'))->map(fn($id) => ['medication_id' => $id])->all();
+        if (empty($medicationDetails) && !empty($request->input('medication_ids'))) {
+            $medicationDetails = collect($request->input('medication_ids'))->map(fn ($id) => ['medication_id' => $id])->all();
         }
 
         try {
@@ -89,8 +91,8 @@ class PrescriptionController extends Controller
      * Display the specified resource.
      * (Podríamos tener una vista Show o redirigir a Edit)
      *
-     * @param Prescription $prescription
-     * @return \Inertia\Response|\Illuminate\Http\RedirectResponse
+     * @param  Prescription  $prescription
+     * @return Response|RedirectResponse
      */
     public function show(Prescription $prescription): Response
     {
@@ -103,7 +105,6 @@ class PrescriptionController extends Controller
         //     return $medication;
         // });
 
-
         return Inertia::render('prescriptions/Show', [ // Necesitarás crear esta vista
             'prescription' => $prescription,
         ]);
@@ -114,7 +115,7 @@ class PrescriptionController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param Prescription $prescription
+     * @param  Prescription  $prescription
      * @return Response
      */
     public function edit(Prescription $prescription): Response
@@ -133,8 +134,8 @@ class PrescriptionController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param UpdatePrescriptionRequest $request
-     * @param Prescription $prescription
+     * @param  UpdatePrescriptionRequest  $request
+     * @param  Prescription  $prescription
      * @return RedirectResponse
      */
     public function update(UpdatePrescriptionRequest $request, Prescription $prescription): RedirectResponse
@@ -144,7 +145,7 @@ class PrescriptionController extends Controller
         $medicationDetails = $request->safe()->input('medication_details', []);
 
         if (empty($medicationDetails) && !empty($request->input('medication_ids'))) {
-            $medicationDetails = collect($request->input('medication_ids'))->map(fn($id) => ['medication_id' => $id])->all();
+            $medicationDetails = collect($request->input('medication_ids'))->map(fn ($id) => ['medication_id' => $id])->all();
         }
 
         try {
@@ -160,8 +161,8 @@ class PrescriptionController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param Prescription $prescription
-     * @return \Illuminate\Http\RedirectResponse
+     * @param  Prescription  $prescription
+     * @return RedirectResponse
      */
     public function destroy(Prescription $prescription): RedirectResponse
     {

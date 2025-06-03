@@ -1,23 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Enums\MedicationScheduleFrequencyEnum;
 use App\Enums\MedicationTypeEnum;
-use App\Models\Medication;
 use App\Http\Requests\StoreMedicationRequest;
 use App\Http\Requests\UpdateMedicationRequest;
+use App\Models\Medication;
 use App\Models\User;
 use App\Services\MedicationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
-class MedicationController extends Controller
+final class MedicationController extends Controller
 {
     public function __construct(
         private readonly MedicationService $medicationService
@@ -60,7 +62,7 @@ class MedicationController extends Controller
     /**
      * Store a newly created medication in storage.
      *
-     * @param StoreMedicationRequest $request
+     * @param  StoreMedicationRequest  $request
      * @return RedirectResponse
      */
     public function store(StoreMedicationRequest $request): RedirectResponse
@@ -79,7 +81,7 @@ class MedicationController extends Controller
             );
 
             return to_route('medications.index');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return back()->with('error', __('messages.failed_to_add_medication'));
         }
     }
@@ -87,16 +89,14 @@ class MedicationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Medication $medication)
-    {
-        //
-    }
+    public function show(Medication $medication) {}
 
     /**
      * Show the form for editing the specified medication.
      *
      * @param  Medication  $medication
      * @return Response
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function edit(Medication $medication): Response
@@ -114,9 +114,10 @@ class MedicationController extends Controller
     /**
      * Update the specified medication in storage.
      *
-     * @param UpdateMedicationRequest $request
-     * @param Medication $medication
+     * @param  UpdateMedicationRequest  $request
+     * @param  Medication  $medication
      * @return RedirectResponse
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(UpdateMedicationRequest $request, Medication $medication): RedirectResponse
@@ -130,12 +131,14 @@ class MedicationController extends Controller
                 $validatedMedicationData,
                 $validatedSchedulesData
             );
+
             return to_route('medications.index');
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('MedicationController::update failed: ' . $e->getMessage(), [
                 'medication_id' => $medication->id,
-                'exception' => $e
+                'exception' => $e,
             ]);
+
             return back()->with('error', __('messages.failed_to_update_medication'));
         }
     }
@@ -145,6 +148,7 @@ class MedicationController extends Controller
      *
      * @param  Medication  $medication
      * @return RedirectResponse
+     *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy(Medication $medication): RedirectResponse
@@ -154,7 +158,7 @@ class MedicationController extends Controller
             $this->medicationService->deleteMedication($medication);
 
             return back()->with('success', __('messages.medication_deleted_successfully'));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return back()
                 ->with('error', __('messages.failed_to_delete_medication'));
         }

@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class PrescriptionSeeder extends Seeder
+final class PrescriptionSeeder extends Seeder
 {
     /**
      * Run the database seeds.

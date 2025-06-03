@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -39,7 +41,7 @@ use Illuminate\Support\Carbon;
  *
  * @mixin \Eloquent
  */
-class Prescription extends Model
+final class Prescription extends Model
 {
     /** @use HasFactory<\Database\Factories\PrescriptionFactory> */
     use HasFactory;

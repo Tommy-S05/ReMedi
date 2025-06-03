@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
 use App\Enums\MedicationScheduleFrequencyEnum;
@@ -16,13 +18,13 @@ use Throwable;
 /**
  * Service class for handling medication-related business logic.
  */
-class MedicationService
+final class MedicationService
 {
     /**
      * Retrieves all medications for a given user, including their schedules,
      * and prepares them for display with translated enum labels.
      *
-     * @param User $user The user whose medications to retrieve.
+     * @param  User  $user  The user whose medications to retrieve.
      * @return Collection<int, Medication>
      */
     public function getMedicationsForUser(User $user): Collection
@@ -32,7 +34,7 @@ class MedicationService
                 'schedules' => function ($query) {
                     $query->orderBy('time_to_take', 'asc')
                         ->orderBy('start_date', 'asc');
-                }
+                },
             ])
             ->latest()
             ->get();
@@ -43,7 +45,7 @@ class MedicationService
     /**
      * Retrieves just the necessary medication data for selection dropdowns.
      *
-     * @param User $user The user whose medications to retrieve.
+     * @param  User  $user  The user whose medications to retrieve.
      * @return Collection<int, array<string, string|int>>
      */
     //  * @return Collection<int, array<string, mixed>>
@@ -53,7 +55,7 @@ class MedicationService
             ->select('id', 'name')
             ->latest()
             ->get()
-            ->map(fn($medication) => [
+            ->map(fn ($medication) => [
                 'id' => $medication->id,
                 'name' => $medication->name,
                 // Otros campos necesarios para el selector
@@ -63,7 +65,7 @@ class MedicationService
     /**
      * Get the human-readable label for a MedicationTypeEnum.
      *
-     * @param MedicationTypeEnum $typeEnum
+     * @param  MedicationTypeEnum  $typeEnum
      * @return string
      */
     public function getMedicationTypeLabel(MedicationTypeEnum $typeEnum): string
@@ -74,7 +76,7 @@ class MedicationService
     /**
      * Get the human-readable label for a MedicationScheduleFrequencyEnum.
      *
-     * @param MedicationScheduleFrequencyEnum $frequencyEnum
+     * @param  MedicationScheduleFrequencyEnum  $frequencyEnum
      * @return string
      */
     public function getMedicationScheduleFrequencyLabel(MedicationScheduleFrequencyEnum $frequencyEnum): string
@@ -85,14 +87,15 @@ class MedicationService
     /**
      * Creates a new medication with its associated schedules for a user.
      *
-     * @param User $user The user who owns the medication.
-     * @param array<string, mixed> $medicationData Validated data for the medication.
-     * Expected keys: 'name', 'type' (MedicationTypeEnum value), 'dosage', etc.
-     * @param array<int, array<string, mixed>> $schedulesData Array of validated schedule data.
-     * Each schedule array expects keys like: 'time_to_take',
-     * 'frequency_type' (MedicationScheduleFrequencyEnum value), 'start_date', etc.
+     * @param  User  $user  The user who owns the medication.
+     * @param  array<string, mixed>  $medicationData  Validated data for the medication.
+     *                                                Expected keys: 'name', 'type' (MedicationTypeEnum value), 'dosage', etc.
+     * @param  array<int, array<string, mixed>>  $schedulesData  Array of validated schedule data.
+     *                                                           Each schedule array expects keys like: 'time_to_take',
+     *                                                           'frequency_type' (MedicationScheduleFrequencyEnum value), 'start_date', etc.
      * @return Medication The created medication instance.
-     * @throws \Throwable If any error occurs during the creation process.
+     *
+     * @throws Throwable If any error occurs during the creation process.
      */
     public function createMedication(User $user, array $medicationData, array $schedulesData): Medication
     {
@@ -109,18 +112,18 @@ class MedicationService
                     : MedicationScheduleFrequencyEnum::tryFrom($scheduleInput['frequency_type']);
 
                 return [
-                    'time_to_take'       => $scheduleInput['time_to_take'],
-                    'frequency_type'     => $frequencyType,
-                    'start_date'         => $scheduleInput['start_date'],
-                    'end_date'           => $scheduleInput['end_date'] ?? null,
-                    'is_active'          => $scheduleInput['is_active'] ?? true,
-                    'days_of_week'       => $frequencyType === MedicationScheduleFrequencyEnum::SPECIFIC_DAYS
+                    'time_to_take' => $scheduleInput['time_to_take'],
+                    'frequency_type' => $frequencyType,
+                    'start_date' => $scheduleInput['start_date'],
+                    'end_date' => $scheduleInput['end_date'] ?? null,
+                    'is_active' => $scheduleInput['is_active'] ?? true,
+                    'days_of_week' => $frequencyType === MedicationScheduleFrequencyEnum::SPECIFIC_DAYS
                         ? ($scheduleInput['days_of_week'] ?? null)
                         : null,
-                    'interval_in_days'   => $frequencyType === MedicationScheduleFrequencyEnum::INTERVAL_IN_DAYS
+                    'interval_in_days' => $frequencyType === MedicationScheduleFrequencyEnum::INTERVAL_IN_DAYS
                         ? ($scheduleInput['interval_in_days'] ?? null)
                         : null,
-                    'interval_in_hours'  => $frequencyType === MedicationScheduleFrequencyEnum::HOURLY_INTERVAL
+                    'interval_in_hours' => $frequencyType === MedicationScheduleFrequencyEnum::HOURLY_INTERVAL
                         ? ($scheduleInput['interval_in_hours'] ?? null)
                         : null,
                 ];
@@ -148,9 +151,10 @@ class MedicationService
      * The schedules will be deleted automatically due to onDelete('cascade')
      * defined in the migration for the foreign key.
      *
-     * @param Medication $medication The medication instance to delete.
+     * @param  Medication  $medication  The medication instance to delete.
      * @return bool True on success, false or throws exception on failure.
-     * @throws \Throwable If any error occurs during the deletion process.
+     *
+     * @throws Throwable If any error occurs during the deletion process.
      */
     public function deleteMedication(Medication $medication): bool
     {
@@ -161,7 +165,7 @@ class MedicationService
         } catch (Throwable $e) {
             Log::error('MedicationService::deleteMedication failed: ' . $e->getMessage(), [
                 'medication_id' => $medication->id,
-                'exception' => $e
+                'exception' => $e,
             ]);
             throw $e;
         }
@@ -173,11 +177,12 @@ class MedicationService
      * Schedules in $schedulesData without an ID will be created.
      * Schedules in $schedulesData with an ID will be updated.
      *
-     * @param Medication $medication The medication instance to update.
-     * @param array<string, mixed> $medicationData Validated data for the medication.
-     * @param array<int, array<string, mixed>> $schedulesData Array of validated schedule data.
+     * @param  Medication  $medication  The medication instance to update.
+     * @param  array<string, mixed>  $medicationData  Validated data for the medication.
+     * @param  array<int, array<string, mixed>>  $schedulesData  Array of validated schedule data.
      * @return Medication The updated medication instance.
-     * @throws \Throwable If any error occurs during the update process.
+     *
+     * @throws Throwable If any error occurs during the update process.
      */
     public function updateMedication(Medication $medication, array $medicationData, array $schedulesData): Medication
     {
@@ -186,7 +191,7 @@ class MedicationService
 
             $medication->update($medicationData);
 
-            if (! empty($schedulesData)) {
+            if (!empty($schedulesData)) {
                 $existingScheduleIds = $medication->schedules->pluck('id')->toArray();
                 $incomingScheduleIds = [];
 
@@ -196,18 +201,18 @@ class MedicationService
                         : MedicationScheduleFrequencyEnum::tryFrom($scheduleInput['frequency_type']);
 
                     $scheduleToSave = [
-                        'time_to_take'       => $scheduleInput['time_to_take'],
-                        'frequency_type'     => $frequencyType,
-                        'start_date'         => $scheduleInput['start_date'],
-                        'end_date'           => $scheduleInput['end_date'] ?? null,
-                        'is_active'          => $scheduleInput['is_active'] ?? true,
-                        'days_of_week'       => $frequencyType === MedicationScheduleFrequencyEnum::SPECIFIC_DAYS
+                        'time_to_take' => $scheduleInput['time_to_take'],
+                        'frequency_type' => $frequencyType,
+                        'start_date' => $scheduleInput['start_date'],
+                        'end_date' => $scheduleInput['end_date'] ?? null,
+                        'is_active' => $scheduleInput['is_active'] ?? true,
+                        'days_of_week' => $frequencyType === MedicationScheduleFrequencyEnum::SPECIFIC_DAYS
                             ? ($scheduleInput['days_of_week'] ?? null)
                             : null,
-                        'interval_in_days'   => $frequencyType === MedicationScheduleFrequencyEnum::INTERVAL_IN_DAYS
+                        'interval_in_days' => $frequencyType === MedicationScheduleFrequencyEnum::INTERVAL_IN_DAYS
                             ? ($scheduleInput['interval_in_days'] ?? null)
                             : null,
-                        'interval_in_hours'  => $frequencyType === MedicationScheduleFrequencyEnum::HOURLY_INTERVAL
+                        'interval_in_hours' => $frequencyType === MedicationScheduleFrequencyEnum::HOURLY_INTERVAL
                             ? ($scheduleInput['interval_in_hours'] ?? null)
                             : null,
                     ];
@@ -231,9 +236,9 @@ class MedicationService
                 $schedulesToDelete = array_diff($existingScheduleIds, $incomingScheduleIds);
                 if (!empty($schedulesToDelete)) {
                     MedicationSchedule::destroy($schedulesToDelete);
-                } else {
-                    // $medication->schedules()->delete();
                 }
+                // $medication->schedules()->delete();
+
             }
 
             DB::commit();

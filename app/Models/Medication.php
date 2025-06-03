@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\MedicationTypeEnum;
 use Eloquent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
-use \Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * App\Models\Medication
@@ -32,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property-read int|null $prescriptions_count
  * @property-read string|null $type_label
  * @property-read User $user
+ *
  * @method static \Database\Factories\MedicationFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medication newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medication newQuery()
@@ -46,9 +49,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medication whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medication whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medication whereUserId($value)
+ *
  * @mixin Eloquent
  */
-class Medication extends Model
+final class Medication extends Model
 {
     /** @use HasFactory<\Database\Factories\MedicationFactory> */
     use HasFactory;
@@ -120,12 +124,12 @@ class Medication extends Model
     /**
      * Get the human-readable label for the medication type.
      *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string|null, never>
+     * @return Attribute<string|null, never>
      */
     protected function typeLabel(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->type?->label(),
+            get: fn () => $this->type?->label(),
         );
     }
 }

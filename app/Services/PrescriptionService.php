@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Services;
 
+use App\Models\Medication;
 use App\Models\Prescription;
-use App\Models\User;
-use App\Models\Medication; // Importar
+use App\Models\User; // Importar
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -14,16 +16,17 @@ use Throwable;
 /**
  * Service class for handling prescription-related business logic.
  */
-class PrescriptionService
+final class PrescriptionService
 {
     /**
      * Creates a new prescription for a user and optionally attaches medications.
      *
-     * @param User $user The user who owns the prescription.
-     * @param array<string, mixed> $prescriptionData Validated data for the prescription.
-     * @param array<int, array<string, mixed>>|null $medicationDetails Optional.
+     * @param  User  $user  The user who owns the prescription.
+     * @param  array<string, mixed>  $prescriptionData  Validated data for the prescription.
+     * @param  array<int, array<string, mixed>>|null  $medicationDetails  Optional.
      * @return Prescription The created prescription instance.
-     * @throws \Throwable If any error occurs.
+     *
+     * @throws Throwable If any error occurs.
      */
     public function createPrescription(User $user, array $prescriptionData, ?array $medicationDetails = null): Prescription
     {
@@ -42,7 +45,7 @@ class PrescriptionService
             Log::error(__METHOD__ . ' failed: ' . $e->getMessage(), [
                 'exception' => $e,
                 'user_id' => $user->id,
-                'data' => $prescriptionData
+                'data' => $prescriptionData,
             ]);
             throw $e;
         }
@@ -51,11 +54,12 @@ class PrescriptionService
     /**
      * Updates an existing prescription and its medications.
      *
-     * @param Prescription $prescription The prescription to update.
-     * @param array<string, mixed> $prescriptionData Validated data for the prescription.
-     * @param array<int, array<string, mixed>>|null $medicationDetails Optional. Array of medication details to sync.
+     * @param  Prescription  $prescription  The prescription to update.
+     * @param  array<string, mixed>  $prescriptionData  Validated data for the prescription.
+     * @param  array<int, array<string, mixed>>|null  $medicationDetails  Optional. Array of medication details to sync.
      * @return Prescription The updated prescription instance.
-     * @throws \Throwable If any error occurs.
+     *
+     * @throws Throwable If any error occurs.
      */
     public function updatePrescription(Prescription $prescription, array $prescriptionData, ?array $medicationDetails = null): Prescription
     {
@@ -74,7 +78,7 @@ class PrescriptionService
             Log::error(__METHOD__ . ' failed: ' . $e->getMessage(), [
                 'exception' => $e,
                 'prescription_id' => $prescription->id,
-                'data' => $prescriptionData
+                'data' => $prescriptionData,
             ]);
             throw $e;
         }
@@ -87,9 +91,10 @@ class PrescriptionService
      * (Nota: `onDelete('cascade')` en la tabla pivote es para cuando se borra un Medication o Prescription, no para el detach).
      * Eloquent se encarga de detach al borrar un modelo con relación BelongsToMany.
      *
-     * @param Prescription $prescription The prescription to delete.
+     * @param  Prescription  $prescription  The prescription to delete.
      * @return bool True on success.
-     * @throws \Throwable If any error occurs.
+     *
+     * @throws Throwable If any error occurs.
      */
     public function deletePrescription(Prescription $prescription): bool
     {
@@ -101,7 +106,7 @@ class PrescriptionService
         } catch (Throwable $e) {
             Log::error(__METHOD__ . ' failed: ' . $e->getMessage(), [
                 'exception' => $e,
-                'prescription_id' => $prescription->id
+                'prescription_id' => $prescription->id,
             ]);
             throw $e;
         }
@@ -110,9 +115,9 @@ class PrescriptionService
     /**
      * Retrieves all prescriptions for a given user, optionally with their medications.
      *
-     * @param User $user The user whose prescriptions to retrieve.
-     * @param bool $withMedications Whether to eager load medications.
-     * @return \Illuminate\Support\Collection<int, Prescription>
+     * @param  User  $user  The user whose prescriptions to retrieve.
+     * @param  bool  $withMedications  Whether to eager load medications.
+     * @return Collection<int, Prescription>
      */
     public function getPrescriptionsForUser(User $user, bool $withMedications = true): Collection
     {
@@ -120,17 +125,18 @@ class PrescriptionService
         if ($withMedications) {
             $query->with('medications');
         }
+
         return $query->get();
     }
 
     /**
      * Syncs medications for a given prescription.
      *
-     * @param Prescription $prescription
-     * @param array<int, array<string, mixed>> $medicationDetails Each item: ['medication_id' => id, 'dosage_on_prescription' => ..., etc.]
+     * @param  Prescription  $prescription
+     * @param  array<int, array<string, mixed>>  $medicationDetails  Each item: ['medication_id' => id, 'dosage_on_prescription' => ..., etc.]
      * @return void
      */
-    protected function syncMedicationsForPrescription(Prescription $prescription, array $medicationDetails): void
+    private function syncMedicationsForPrescription(Prescription $prescription, array $medicationDetails): void
     {
         $syncData = [];
         foreach ($medicationDetails as $detail) {
@@ -149,7 +155,7 @@ class PrescriptionService
             } else {
                 Log::warning('Attempted to sync non-existent or unauthorized medication to prescription.', [
                     'prescription_id' => $prescription->id,
-                    'attempted_medication_id' => $detail['medication_id']
+                    'attempted_medication_id' => $detail['medication_id'],
                 ]);
             }
         }

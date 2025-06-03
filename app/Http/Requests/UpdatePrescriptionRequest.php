@@ -1,12 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
-class UpdatePrescriptionRequest extends FormRequest
+final class UpdatePrescriptionRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,6 +16,7 @@ class UpdatePrescriptionRequest extends FormRequest
     public function authorize(): bool
     {
         $prescription = $this->route('prescription');
+
         return $prescription && $this->user()->can('update', $prescription);
     }
 
@@ -33,14 +36,14 @@ class UpdatePrescriptionRequest extends FormRequest
             'medication_ids.*' => [
                 'integer',
                 Rule::exists('medications', 'id')
-                    ->where(fn($query) => $query->where('user_id', Auth::id())),
+                    ->where(fn ($query) => $query->where('user_id', Auth::id())),
             ],
             'medication_details' => ['sometimes', 'array'],
             'medication_details.*.medication_id' => [
                 'required_with:medication_details',
                 'integer',
                 Rule::exists('medications', 'id')
-                    ->where(fn($query) => $query->where('user_id', Auth::id())),
+                    ->where(fn ($query) => $query->where('user_id', Auth::id())),
             ],
             'medication_details.*.dosage_on_prescription' => ['nullable', 'string', 'max:255'],
             'medication_details.*.quantity_prescribed' => ['nullable', 'string', 'max:255'],

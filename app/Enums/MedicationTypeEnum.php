@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Enums;
 
 /**
@@ -16,6 +18,21 @@ enum MedicationTypeEnum: string
     case OINTMENT = 'ointment';
     case PATCH = 'patch';
     case OTHER = 'other';
+
+    /**
+     * Get all cases formatted for a select input.
+     *
+     * @return array<int, array{value: string, label: string}>
+     */
+    public static function forSelect(): array
+    {
+        return collect(self::cases())->map(function ($case) {
+            return [
+                'value' => $case->value,
+                'label' => $case->label(),
+            ];
+        })->all();
+    }
 
     /**
      * Get the human-readable label for the medication type.
@@ -35,20 +52,5 @@ enum MedicationTypeEnum: string
             self::PATCH => 'Patch',
             self::OTHER => 'Other',
         };
-    }
-
-    /**
-     * Get all cases formatted for a select input.
-     *
-     * @return array<int, array{value: string, label: string}>
-     */
-    public static function forSelect(): array
-    {
-        return collect(self::cases())->map(function($case) {
-            return [
-                'value' => $case->value,
-                'label' => $case->label(),
-            ];
-        })->all();
     }
 }

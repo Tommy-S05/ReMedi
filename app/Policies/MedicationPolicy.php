@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Medication;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
-class MedicationPolicy
+final class MedicationPolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -35,8 +36,8 @@ class MedicationPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param User $user
-     * @param Medication $medication
+     * @param  User  $user
+     * @param  Medication  $medication
      * @return bool
      */
     public function update(User $user, Medication $medication): bool
@@ -46,8 +47,9 @@ class MedicationPolicy
 
     /**
      * Determine whether the user can delete the model.
-     * @param User $user
-     * @param Medication $medication
+     *
+     * @param  User  $user
+     * @param  Medication  $medication
      * @return bool
      */
     public function delete(User $user, Medication $medication): bool

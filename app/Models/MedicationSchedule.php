@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Enums\MedicationScheduleFrequencyEnum;
@@ -27,6 +29,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read string|null $frequency_type_label
  * @property-read Medication $medication
+ *
  * @method static \Database\Factories\MedicationScheduleFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicationSchedule newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicationSchedule newQuery()
@@ -43,9 +46,10 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicationSchedule whereStartDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicationSchedule whereTimeToTake($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicationSchedule whereUpdatedAt($value)
+ *
  * @mixin Eloquent
  */
-class MedicationSchedule extends Model
+final class MedicationSchedule extends Model
 {
     /** @use HasFactory<\Database\Factories\MedicationScheduleFactory> */
     use HasFactory;
@@ -102,12 +106,12 @@ class MedicationSchedule extends Model
     /**
      * Get the human-readable label for the schedule frequency type.
      *
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute<string, never>
+     * @return Attribute<string, never>
      */
     protected function frequencyTypeLabel(): Attribute
     {
         return Attribute::make(
-            get: fn() => $this->frequency_type->label(), // Llama al método label() del Enum
+            get: fn () => $this->frequency_type->label(), // Llama al método label() del Enum
         );
     }
 }

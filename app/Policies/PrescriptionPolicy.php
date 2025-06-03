@@ -1,21 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Policies;
 
 use App\Models\Prescription;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Auth\Access\Response;
 use Illuminate\Support\Facades\Auth;
 
-class PrescriptionPolicy
+final class PrescriptionPolicy
 {
     use HandlesAuthorization;
 
     /**
      * Determine whether the user can view any models.
      *
-     * @param User $user
+     * @param  User  $user
      * @return bool
      */
     public function viewAny(User $user): bool
@@ -26,8 +27,8 @@ class PrescriptionPolicy
     /**
      * Determine whether the user can view the model.
      *
-     * @param User $user
-     * @param Prescription $prescription
+     * @param  User  $user
+     * @param  Prescription  $prescription
      * @return bool
      */
     public function view(User $user, Prescription $prescription): bool
@@ -38,7 +39,7 @@ class PrescriptionPolicy
     /**
      * Determine whether the user can create models.
      *
-     * @param User $user
+     * @param  User  $user
      * @return bool
      */
     public function create(User $user): bool
@@ -49,8 +50,8 @@ class PrescriptionPolicy
     /**
      * Determine whether the user can update the model.
      *
-     * @param User $user
-     * @param Prescription $prescription
+     * @param  User  $user
+     * @param  Prescription  $prescription
      * @return bool
      */
     public function update(User $user, Prescription $prescription): bool
@@ -61,8 +62,8 @@ class PrescriptionPolicy
     /**
      * Determine whether the user can delete the model.
      *
-     * @param User $user
-     * @param Prescription $prescription
+     * @param  User  $user
+     * @param  Prescription  $prescription
      * @return bool
      */
     public function delete(User $user, Prescription $prescription): bool
