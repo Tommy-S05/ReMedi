@@ -5,6 +5,7 @@
     ],
     "rules": {
         "align_multiline_comment": true,
+        "phpdoc_align": false,
         "array_syntax": true,
         "array_push": true,
         "backtick_to_shell_exec": true,
