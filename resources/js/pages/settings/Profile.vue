@@ -5,18 +5,35 @@ import DeleteUser from '@/components/DeleteUser.vue';
 import HeadingSmall from '@/components/HeadingSmall.vue';
 import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useTranslations } from '@/composables/useTranslations';
 import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
+import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData, type User } from '@/types';
+import { Check, ChevronsUpDown } from 'lucide-vue-next';
+import { computed, ref } from 'vue';
+
+// Interfaz para un grupo de zonas horarias (por continente/región)
+interface TimezoneGroup {
+    [timezone: string]: string;
+}
+
+// Interfaz para la colección completa de timezones agrupados
+interface Timezones {
+    [continent: string]: TimezoneGroup;
+}
 
 interface Props {
     mustVerifyEmail: boolean;
     status?: string;
+    timezones: Timezones;
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,11 +44,28 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const page = usePage<SharedData>();
 const user = page.props.auth.user as User;
+const { t } = useTranslations();
 
 const form = useForm({
     name: user.name,
     email: user.email,
+    timezone: user.timezone ?? 'UTC',
 });
+
+const open = ref(false);
+
+const selectedTimezone = computed(() => {
+    return form.timezone;
+});
+
+/**
+ * Maneja la selección de un ítem en el combobox.
+ * @param {string} timezone - El valor de la zona horaria seleccionada.
+ */
+function handleSelectTimezone(timezone: string) {
+    form.timezone = timezone;
+    open.value = false;
+}
 
 const submit = () => {
     form.patch(route('profile.update'), {
@@ -69,8 +103,56 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.email" />
                     </div>
 
+                    <div class="grid gap-2">
+                        <Label for="timezone">{{ t('Timezone') }}</Label>
+                        <Popover v-model:open="open">
+                            <PopoverTrigger as-child>
+                                <Button
+                                    variant="outline"
+                                    role="combobox"
+                                    :aria-expanded="open"
+                                    class="hover:dark:text-remedi-white w-full justify-between"
+                                >
+                                    {{ selectedTimezone || t('Select timezone') + '...' }}
+                                    <ChevronsUpDown class="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent class="w-[--radix-popover-trigger-width] p-0">
+                                <Command v-model="form.timezone">
+                                    <CommandInput :placeholder="t('Search timezone') + '...'" />
+                                    <CommandEmpty>{{ t('No timezone found.') }}</CommandEmpty>
+                                    <CommandList>
+                                        <CommandGroup
+                                            v-for="(timezones, continent) in props.timezones"
+                                            :key="continent"
+                                            :heading="continent.toString().toUpperCase()"
+                                        >
+                                            <CommandItem
+                                                v-for="(timezone, key) in timezones"
+                                                :key="key"
+                                                :value="timezone"
+                                                @select="handleSelectTimezone(timezone)"
+                                            >
+                                                <Check
+                                                    :class="
+                                                        cn(
+                                                            'hover:text-remedi-dark-blue mr-2 h-4 w-4',
+                                                            form.timezone === timezone ? 'opacity-100' : 'opacity-0',
+                                                        )
+                                                    "
+                                                />
+                                                {{ timezone }}
+                                            </CommandItem>
+                                        </CommandGroup>
+                                    </CommandList>
+                                </Command>
+                            </PopoverContent>
+                        </Popover>
+                        <InputError class="mt-2" :message="form.errors.timezone" />
+                    </div>
+
                     <div v-if="mustVerifyEmail && !user.email_verified_at">
-                        <p class="-mt-4 text-sm text-muted-foreground">
+                        <p class="text-muted-foreground -mt-4 text-sm">
                             Your email address is unverified.
                             <Link
                                 :href="route('verification.send')"

@@ -7,12 +7,26 @@ import { Label } from '@/components/ui/label';
 import AuthBase from '@/layouts/AuthLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { LoaderCircle } from 'lucide-vue-next';
+import { onMounted } from 'vue';
 
 const form = useForm({
     name: '',
     email: '',
+    timezone: '',
     password: '',
     password_confirmation: '',
+});
+
+/**
+ * Cuando el componente se monta, detecta la zona horaria del navegador
+ * y la establece en el formulario.
+ */
+onMounted(() => {
+    try {
+        form.timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    } catch (e) {
+        console.warn('Could not detect timezone.', e);
+    }
 });
 
 const submit = () => {
@@ -74,7 +88,7 @@ const submit = () => {
                 </Button>
             </div>
 
-            <div class="text-center text-sm text-muted-foreground">
+            <div class="text-muted-foreground text-center text-sm">
                 Already have an account?
                 <TextLink :href="route('login')" class="underline underline-offset-4" :tabindex="6">Log in</TextLink>
             </div>

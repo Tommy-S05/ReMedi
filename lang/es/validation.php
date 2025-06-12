@@ -294,6 +294,7 @@ return [
         'test_name'                     => 'nombre de prueba',
         'text'                          => 'texto',
         'time'                          => 'hora',
+        'timezone'                     => 'zona horaria',
         'title'                         => 'título',
         'type'                          => 'tipo',
         'updated_at'                    => 'actualizado el',

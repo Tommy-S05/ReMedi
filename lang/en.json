@@ -393,5 +393,9 @@
     "Wed": "Wed",
     "Whoops!": "Whoops!",
     "Yes": "Yes",
-    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account."
+    "You are receiving this email because we received a password reset request for your account.": "You are receiving this email because we received a password reset request for your account.",
+    "Timezone": "Timezone",
+    "Select timezone": "Select timezone",
+    "No timezone found.": "No timezone found.",
+    "Search timezone": "Search timezone"
 }

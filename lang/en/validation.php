@@ -290,6 +290,7 @@ return [
         'test_name'                     => 'test name',
         'text'                          => 'text',
         'time'                          => 'time',
+        'timezone'                      => 'timezone',
         'title'                         => 'title',
         'type'                          => 'type',
         'updated_at'                    => 'updated at',

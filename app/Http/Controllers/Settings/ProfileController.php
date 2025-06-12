@@ -6,10 +6,13 @@ namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Settings\ProfileUpdateRequest;
+use DateTimeZone;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -23,6 +26,7 @@ final class ProfileController extends Controller
         return Inertia::render('settings/Profile', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
+            'timezones' => self::getTimezones(),
         ]);
     }
 
@@ -61,5 +65,16 @@ final class ProfileController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    private static function getTimezones(): Collection
+    {
+        return collect(DateTimeZone::listIdentifiers())
+            ->mapToGroups(fn ($timezone) => [
+                Str::of($timezone)
+                    ->before('/')
+                    ->toString() => [$timezone => $timezone],
+            ])
+            ->map(fn ($group) => $group->collapse());
     }
 }
