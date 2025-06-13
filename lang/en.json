@@ -397,5 +397,21 @@
     "Timezone": "Timezone",
     "Select timezone": "Select timezone",
     "No timezone found.": "No timezone found.",
-    "Search timezone": "Search timezone"
+    "Search timezone": "Search timezone",
+    "Notifications": "Notifications",
+    "Mark all as read": "Mark all as read",
+    "Loading...": "Loading...",
+    "You have no new notifications.": "You have no new notifications.",
+    "Skip": "Skip",
+    "Mark as Taken": "Mark as Taken",
+    "Action Recorded": "Action Recorded",
+    "Your action has been logged successfully.": "Your action has been logged successfully.",
+    "Action Failed": "Action Failed",
+    "An unexpected error occurred.": "An unexpected error occurred.",
+    "All notifications marked as read.": "All notifications marked as read.",
+    "Could not mark all as read.": "Could not mark all as read.",
+    "Take your medication reminder": "It's time to take your :medication (:dosage) at :time.",
+    "Time to take your medication!": "Time to take your medication!",
+    "Time to take your :medication (:dosage) at :time.": "Time to take your :medication (:dosage) at :time.",
+    "notifications.medication_reminder_message": "Time to take your :medication (:dosage) at :time."
 }

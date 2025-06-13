@@ -126,7 +126,7 @@
   --destructive-foreground: hsl(0 0% 98%);
 
   /* Border: Gris Suave */
-  --border: 210 20% 92.7%; /* HSL para #F2F5F7 (o un poco más oscuro si es el mismo que muted) */
+  --border: hsl(210 20% 85%); /* Aumentado el contraste para el modo claro */
   --input: 210 20% 89.8%; /* Un poco más oscuro que el borde para los inputs */
   --ring: 210 100% 25%; /* Azul Oscuro para el ring de focus */
 

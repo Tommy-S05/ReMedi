@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
+use App\Console\Commands\SendMedicationRemindersCommand;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -23,5 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+    })
+    ->withSchedule(function (Schedule $schedule) {
+        $schedule->command(SendMedicationRemindersCommand::class)
+            ->everyMinute()
+            ->sendOutputTo('storage/logs/medication_reminders.log');
     })
     ->withExceptions(function (Exceptions $exceptions) {})->create();

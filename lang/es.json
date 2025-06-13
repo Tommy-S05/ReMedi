@@ -397,5 +397,21 @@
     "Timezone": "Zona horaria",
     "Select timezone": "Seleccione zona horaria",
     "No timezone found.": "No se encontró zona horaria.",
-    "Search timezone": "Buscar zona horaria"
+    "Search timezone": "Buscar zona horaria",
+    "Notifications": "Notificaciones",
+    "Mark all as read": "Marcar todas como leídas",
+    "Loading...": "Cargando...",
+    "You have no new notifications.": "No tienes notificaciones nuevas.",
+    "Skip": "Omitir",
+    "Mark as Taken": "Marcar como Tomado",
+    "Action Recorded": "Acción Registrada",
+    "Your action has been logged successfully.": "Tu acción ha sido registrada exitosamente.",
+    "Action Failed": "Falló la Acción",
+    "An unexpected error occurred.": "Ocurrió un error inesperado.",
+    "All notifications marked as read.": "Todas las notificaciones han sido marcadas como leídas.",
+    "Could not mark all as read.": "No se pudieron marcar todas como leídas.",
+    "Take your medication reminder": "Es hora de tomar tu :medication (:dosage) a las :time.",
+    "Time to take your medication!": "¡Es hora de tomar tu medicamento!",
+    "Time to take your :medication (:dosage) at :time.": "Es hora de tomar tu :medication (:dosage) a las :time.",
+    "notifications.medication_reminder_message": "Es hora de tomar tu :medication (:dosage) a las :time."
 }

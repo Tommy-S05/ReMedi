@@ -26,6 +26,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Rutas para Prescripciones
     Route::resource('prescriptions', Controllers\PrescriptionController::class);
+
+    // Rutas Api con la autenticación de Web
+    Route::prefix('api')->group(function () {
+        // Ruta para registrar la toma de un medicamento
+        Route::post('/medication-logs', [Controllers\MedicationLogController::class, 'store'])->name('medication-logs.store');
+
+        // --- Rutas para Notificaciones ---
+        Route::prefix('notifications')->name('notifications.')->group(function () {
+            Route::get('/', [Controllers\NotificationController::class, 'index'])->name('index');
+            Route::post('/{notification}/read', [Controllers\NotificationController::class, 'markAsRead'])->name('markAsRead');
+            Route::post('/mark-all-as-read', [Controllers\NotificationController::class, 'markAllAsRead'])->name('markAllAsRead');
+        });
+    });
 });
 
 require __DIR__ . '/settings.php';
