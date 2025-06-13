@@ -13,4 +13,9 @@ return [
     'failed_to_update_prescription' => 'Failed to update prescription.',
     'prescription_deleted_successfully' => 'Prescription deleted successfully.',
     'failed_to_delete_prescription' => 'Failed to delete prescription.',
+    'medication_log_recorded_successfully' => 'Action recorded successfully.',
+    'failed_to_record_medication_log' => 'Could not record the action. Please try again.',
+    'notification_marked_as_read' => 'Notification marked as read.',
+    'all_notifications_marked_as_read' => 'All notifications marked as read.',
+    'notification_not_found' => 'Notification not found or access denied.',
 ];

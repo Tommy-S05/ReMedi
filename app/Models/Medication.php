@@ -32,6 +32,8 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $schedules_count
  * @property-read Collection<int, Prescription> $prescriptions
  * @property-read int|null $prescriptions_count
+ * @property-read Collection<int, MedicationTakeLog> $takeLogs
+ * @property-read int|null $take_logs_count
  * @property-read string|null $type_label
  * @property-read User $user
  *
@@ -119,6 +121,16 @@ final class Medication extends Model
         return $this->belongsToMany(Prescription::class, 'medication_prescription')
             ->withPivot(['dosage_on_prescription', 'quantity_prescribed', 'instructions_on_prescription'])
             ->withTimestamps();
+    }
+
+    /**
+     * Get the take logs for this medication.
+     *
+     * @return HasMany<MedicationTakeLog>
+     */
+    public function takeLogs(): HasMany
+    {
+        return $this->hasMany(MedicationTakeLog::class);
     }
 
     /**

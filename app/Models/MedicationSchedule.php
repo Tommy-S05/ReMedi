@@ -7,9 +7,11 @@ namespace App\Models;
 use App\Enums\MedicationScheduleFrequencyEnum;
 use Eloquent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 
 /**
@@ -29,6 +31,8 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  * @property-read string|null $frequency_type_label
  * @property-read Medication $medication
+ * @property-read Collection<int, MedicationTakeLog> $takeLogs
+ * @property-read int|null $take_logs_count
  *
  * @method static \Database\Factories\MedicationScheduleFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|MedicationSchedule newModelQuery()
@@ -101,6 +105,16 @@ final class MedicationSchedule extends Model
     public function medication(): BelongsTo
     {
         return $this->belongsTo(Medication::class);
+    }
+
+    /**
+     * Get the take logs for this specific schedule.
+     *
+     * @return HasMany<MedicationTakeLog>
+     */
+    public function takeLogs(): HasMany
+    {
+        return $this->hasMany(MedicationTakeLog::class);
     }
 
     /**

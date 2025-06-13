@@ -7,26 +7,32 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
  * @property string $name
  * @property string $email
  * @property string $timezone
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property Carbon|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Medication> $medications
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property-read Collection<int, Medication> $medications
  * @property-read int|null $medications_count
- * @property-read \Illuminate\Database\Eloquent\Collection<int, Prescription> $prescriptions
+ * @property-read Collection<int, Prescription> $prescriptions
  * @property-read int|null $prescriptions_count
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
+ * @property-read Collection<int, MedicationTakeLog> $medicationTakeLogs
+ * @property-read int|null $medication_take_logs_count
+ * @property-read DatabaseNotificationCollection<int, DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
  *
  * @method static \Database\Factories\UserFactory factory($count = null, $state = [])
@@ -83,6 +89,16 @@ final class User extends Authenticatable implements MustVerifyEmail
     public function prescriptions(): HasMany
     {
         return $this->hasMany(Prescription::class);
+    }
+
+    /**
+     * Get the medication take logs for the user.
+     *
+     * @return HasMany<MedicationTakeLog>
+     */
+    public function medicationTakeLogs(): HasMany
+    {
+        return $this->hasMany(MedicationTakeLog::class);
     }
 
     /**
