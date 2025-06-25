@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\MedicationLogStatusEnum;
 use Eloquent;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,9 @@ use Illuminate\Support\Carbon;
  * @property int $medication_id
  * @property int $medication_schedule_id
  * @property MedicationLogStatusEnum $status
+ * @property-read string $status_label
+ * @property-read string $scheduled_for_formatted
+ * @property-read string|null $action_taken_at_formatted
  * @property Carbon $scheduled_for
  * @property Carbon|null $action_taken_at
  * @property string|null $notes
@@ -64,6 +68,17 @@ final class MedicationTakeLog extends Model
     ];
 
     /**
+     * The accessors to append to the model's array form.
+     *
+     * @var array<int, string>
+     */
+    protected $appends = [
+        'status_label',
+        'scheduled_for_formatted',
+        'action_taken_at_formatted',
+    ];
+
+    /**
      * Get the user that this log belongs to.
      *
      * @return BelongsTo<User, MedicationTakeLog>
@@ -91,5 +106,45 @@ final class MedicationTakeLog extends Model
     public function schedule(): BelongsTo
     {
         return $this->belongsTo(MedicationSchedule::class);
+    }
+
+    /**
+     * Get the human-readable label for the status.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->status->label(),
+        );
+    }
+
+    /**
+     * Get the formatted scheduled_for time in the user's timezone.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function scheduledForFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->scheduled_for
+                ->setTimezone($this->user->timezone ?? config('app.timezone'))
+                ->format('h:i A'), // ej. 08:00 AM
+        );
+    }
+
+    /**
+     * Get the formatted action_taken_at time in the user's timezone.
+     *
+     * @return Attribute<string|null, never>
+     */
+    protected function actionTakenAtFormatted(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->action_taken_at
+                ?->setTimezone($this->user->timezone ?? config('app.timezone'))
+                ->format('h:i A'),
+        );
     }
 }

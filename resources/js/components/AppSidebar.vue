@@ -6,7 +6,7 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useTranslations } from '@/composables/useTranslations';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
-import { LayoutGrid, Pill, FileTextIcon } from 'lucide-vue-next';
+import { LayoutGrid, Pill, FileTextIcon, ClockIcon } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const { t } = useTranslations();
@@ -27,6 +27,11 @@ const mainNavItems: NavItem[] = [
         href: route('prescriptions.index'),
         icon: FileTextIcon,
     },
+    {
+        title: t('History'),
+        href: route('history.index'),
+        icon: ClockIcon,
+    }
 ];
 
 const footerNavItems: NavItem[] = [

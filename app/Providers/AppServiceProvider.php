@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\URL;
@@ -26,6 +27,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->configureModels();
         $this->configureCommands();
         $this->configureVite();
+        $this->configureResources();
     }
 
     /**
@@ -60,5 +62,10 @@ final class AppServiceProvider extends ServiceProvider
     private function configureVite(): void
     {
         Vite::usePrefetchStrategy('aggressive');
+    }
+
+    private function configureResources(): void
+    {
+        JsonResource::withoutWrapping();
     }
 }

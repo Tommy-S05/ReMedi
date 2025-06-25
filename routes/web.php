@@ -27,6 +27,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Rutas para Prescripciones
     Route::resource('prescriptions', Controllers\PrescriptionController::class);
 
+    // --- Ruta para el Historial de Tomas ---
+    Route::get('/history', [Controllers\HistoryController::class, 'index'])->name('history.index');
+
     // Rutas Api con la autenticación de Web
     Route::prefix('api')->group(function () {
         // Ruta para registrar la toma de un medicamento
@@ -38,6 +41,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{notification}/read', [Controllers\NotificationController::class, 'markAsRead'])->name('markAsRead');
             Route::post('/mark-all-as-read', [Controllers\NotificationController::class, 'markAllAsRead'])->name('markAllAsRead');
         });
+
+        Route::get('/history', [Controllers\HistoryController::class, 'fetch'])->name('history.fetch');
     });
 });
 
