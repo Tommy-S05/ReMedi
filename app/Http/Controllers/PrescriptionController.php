@@ -6,7 +6,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePrescriptionRequest;
 use App\Http\Requests\UpdatePrescriptionRequest;
-use App\Models\Medication;
 use App\Models\Prescription;
 use App\Models\User;
 use App\Services\MedicationService;
@@ -16,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Inertia\Response;
+use Spatie\LaravelPdf\Enums\Format;
+use Spatie\LaravelPdf\Facades\Pdf;
 use Throwable;
 
 final class PrescriptionController extends Controller
@@ -174,5 +175,21 @@ final class PrescriptionController extends Controller
         } catch (Throwable $e) {
             return back()->with('error', __('messages.failed_to_delete_prescription'));
         }
+    }
+
+    /**
+     * Generate and stream a PDF document for the specified prescription.
+     *
+     * @param Prescription $prescription
+     * @return Pdf
+     */
+    public function exportPdf(Prescription $prescription): Pdf
+    {
+        Gate::authorize('view', $prescription);
+        $prescription->load('user', 'medications');
+
+        return Pdf::view('pdfs.prescription', ['prescription' => $prescription])
+            ->format(Format::Letter)
+            ->name(__('Prescription') . ' - ' . ($prescription->title ?? "#{$prescription->id}") . '.pdf');
     }
 }
