@@ -107,10 +107,12 @@ const exportToPDF = () => {
                     <CardHeader class="bg-muted/30 border-border/60 border-b p-6">
                         <div class="flex items-center justify-between">
                             <CardTitle class="text-primary dark:text-remedi-light-blue text-xl">{{ t('Prescription Information') }}</CardTitle>
-                            <Button variant="outline" size="sm" @click="exportToPDF" class="hover:dark:text-secondary ml-auto">
-                                <PrinterIcon class="mr-2 h-4 w-4" />
-                                {{ t('Export to PDF') }}
-                            </Button>
+                            <a :href="route('prescriptions.export.pdf', props.prescription.id)" target="_blank">
+                                <Button variant="outline" size="sm" @click="exportToPDF" class="hover:dark:text-secondary ml-auto">
+                                    <PrinterIcon class="mr-2 h-4 w-4" />
+                                    {{ t('Export to PDF') }}
+                                </Button>
+                            </a>
                         </div>
                         <CardDescription
                             v-if="props.prescription.doctor_name || props.prescription.prescription_date_formatted"

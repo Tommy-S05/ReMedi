@@ -26,6 +26,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Rutas para Prescripciones
     Route::resource('prescriptions', Controllers\PrescriptionController::class);
+    Route::get('/prescriptions/{prescription}/export-pdf', [Controllers\PrescriptionController::class, 'exportPdf'])
+        ->name('prescriptions.export.pdf');
 
     // --- Ruta para el Historial de Tomas ---
     Route::get('/history', [Controllers\HistoryController::class, 'index'])->name('history.index');
