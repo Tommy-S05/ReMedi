@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import DashboardCalendarBackup from '@/components/dashboard/DashboardCalendarBackup.vue';
+import DashboardCalendar from '@/components/dashboard/DashboardCalendar.vue';
 import DashboardStatsComponent from '@/components/dashboard/DashboardStats.vue';
 import TodaysReminders from '@/components/dashboard/TodaysReminders.vue';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -68,7 +68,7 @@ const welcomeMessage = computed(() => {
                     <TodaysReminders :reminders="props.remindersForToday" />
                 </TabsContent>
                 <TabsContent value="calendar" class="space-y-4">
-                    <DashboardCalendarBackup />
+                    <DashboardCalendar />
                 </TabsContent>
             </Tabs>
         </div>
