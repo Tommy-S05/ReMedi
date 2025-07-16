@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Notifications\MedicationReminderNotification;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Service class for handling medication reminder logic.
@@ -37,6 +38,100 @@ final class ReminderService
     }
 
     /**
+     * Get all reminder occurrences for a user within a given date range.
+     *
+     * @param User $user
+     * @param Carbon $from The start of the date range (in user's timezone).
+     * @param Carbon $to The end of the date range (in user's timezone).
+     * @return Collection
+     */
+    public function getOccurrencesForUser(User $user, Carbon $from, Carbon $to): Collection
+    {
+        $userTimezone = $user->timezone ?? config('app.timezone');
+        $occurrences = collect();
+
+        $activeSchedules = MedicationSchedule::query()
+            ->whereHas('medication', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->where('is_active', true)
+            ->where('start_date', '<=', $to->toDateString())
+            ->where(function ($q) use ($from) {
+                $q->whereNull('end_date')
+                    ->orWhere('end_date', '>=', $from->toDateString());
+            })
+            ->with('medication:id,name,dosage')
+            ->get();
+
+        /** @var MedicationSchedule $schedule */
+        foreach ($activeSchedules as $schedule) {
+            // Skip if the medication relationship is missing for some reason
+            if (!$schedule->medication) {
+                continue;
+            }
+
+            $firstDoseTime = Carbon::parse($schedule->start_date->toDateString() . ' ' . $schedule->time_to_take->toTimeString(), $userTimezone);
+
+            $cursor = $firstDoseTime->copy();
+
+            // If the first dose is after our range, skip this schedule
+            if ($cursor->isAfter($to)) {
+                continue;
+            }
+
+            // Fast-forward cursor to the start of our requested range if it starts long ago
+            if ($cursor->isBefore($from)) {
+                switch ($schedule->frequency_type->value) {
+                    case 'daily':
+                    case 'specific_days':
+                        $cursor = $from->copy()->setTimeFromTimeString($schedule->time_to_take->toTimeString());
+                        break;
+                    case 'interval_in_days':
+                        $diffInDays = $cursor->diffInDays($from);
+                        $intervalsToSkip = floor($diffInDays / $schedule->interval_in_days);
+                        $cursor->addDays($intervalsToSkip * $schedule->interval_in_days);
+                        break;
+                    case 'hourly_interval':
+                        $diffInHours = $cursor->diffInHours($from);
+                        $intervalsToSkip = floor($diffInHours / $schedule->interval_in_hours);
+                        $cursor->addHours($intervalsToSkip * $schedule->interval_in_hours);
+                        break;
+                }
+            }
+
+            // Iterate and generate occurrences until we are past the end of the range
+            while ($cursor->lessThanOrEqualTo($to)) {
+                // Check if the current cursor time is a valid occurrence
+                if ($this->isValidOccurrence($schedule, $cursor)) {
+                    // Only add if it's within the requested range (after fast-forwarding)
+                    if ($cursor->between($from, $to)) {
+                        $occurrences->push([
+                            'schedule' => $schedule,
+                            'time' => $cursor->copy(),
+                        ]);
+                    }
+                }
+
+                // Advance the cursor to the next potential occurrence
+                $this->advanceCursor($cursor, $schedule);
+
+                // if for some reason cursor doesn't advance, prevent infinite loop
+                if ($cursor->equalTo($occurrences->last()['time'] ?? $firstDoseTime)) {
+                    Log::warning('Potential infinite loop detected in ReminderService.', ['schedule_id' => $schedule->id]);
+                    break;
+                }
+
+                // Break if the schedule has a defined end date and we've passed it
+                if ($schedule->end_date && $cursor->isAfter(Carbon::parse($schedule->end_date, $userTimezone)->endOfDay())) {
+                    break;
+                }
+            }
+        }
+
+        return $occurrences->sortBy('time');
+    }
+
+    /**
      * Retrieves all medication schedules that are due for a user at a specific time.
      *
      * @param User $user The user to check.
@@ -54,6 +149,45 @@ final class ReminderService
             ->unique(fn (array $item) => $item['schedule']->id . '-' . $item['reminder_time']->timestamp)
             ->values()
             ->all();
+    }
+
+    /**
+     * Checks if a given time is a valid occurrence for a schedule (for specific days).
+     */
+    private function isValidOccurrence(MedicationSchedule $schedule, Carbon $time): bool
+    {
+        if ($schedule->frequency_type->value === 'specific_days') {
+            return in_array($time->dayOfWeek, $schedule->days_of_week ?? []);
+        }
+
+        // For other types, the time is always valid if generated by the cursor logic.
+        return true;
+    }
+
+    /**
+     * Advances the cursor to the next potential dose time based on frequency.
+     */
+    private function advanceCursor(Carbon &$cursor, MedicationSchedule $schedule): void
+    {
+        switch ($schedule->frequency_type->value) {
+            case 'daily':
+                $cursor->addDay();
+                break;
+            case 'specific_days':
+                // For specific days, we always just check the next day
+                $cursor->addDay();
+                break;
+            case 'interval_in_days':
+                $cursor->addDays($schedule->interval_in_days ?: 1);
+                break;
+            case 'hourly_interval':
+                $cursor->addHours($schedule->interval_in_hours ?: 1);
+                break;
+            default:
+                // Failsafe to prevent infinite loops on unknown types
+                $cursor->addDay();
+                break;
+        }
     }
 
     /**

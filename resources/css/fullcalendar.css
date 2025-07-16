@@ -1,0 +1,193 @@
+/* ====== LIGHT MODE ====== */
+.fc {
+    /* Fondo principal del calendario */
+    --fc-bg-color: var(--color-card, #fff);
+
+    /* Fondo de la página/calendario */
+    --fc-page-bg-color: var(--color-background, #fff);
+
+    /* Bordes de las celdas y líneas */
+    --fc-border-color: var(--color-border, #e4e4e7);
+
+    /* Fondo de los encabezados (días de la semana) */
+    --fc-neutral-bg-color: var(--color-muted, #f2f5f7);
+
+    /* Color de texto de los encabezados */
+    --fc-neutral-text-color: var(--color-muted-foreground, #64748b);
+
+    /* Botón de navegación: color de fondo normal */
+    --fc-button-bg-color: var(--color-primary, #004080);
+
+    /* Botón de navegación: color de borde normal */
+    --fc-button-border-color: var(--color-primary, #004080);
+
+    /* Botón de navegación: color de texto normal */
+    --fc-button-text-color: var(--color-primary-foreground, #fff);
+
+    /* Botón de navegación: fondo al hacer hover */
+    --fc-button-hover-bg-color: var(--color-secondary, #00B0F0);
+
+    /* Botón de navegación: borde al hacer hover */
+    --fc-button-hover-border-color: var(--color-secondary, #00B0F0);
+
+    /* Botón de navegación: texto al hacer hover */
+    --fc-button-hover-text-color: var(--color-secondary-foreground, #0a2540);
+
+    /* Botón de navegación: fondo cuando está activo */
+    --fc-button-active-bg-color: var(--color-accent, #00D2B3);
+
+    /* Botón de navegación: borde cuando está activo */
+    --fc-button-active-border-color: var(--color-accent, #00D2B3);
+
+    /* Botón de navegación: texto cuando está activo */
+    --fc-button-active-text-color: var(--color-accent-foreground, #0a2540);
+
+    /* Fondo del día actual en el calendario */
+    --fc-today-bg-color: var(--color-muted, #f2f5f7);
+
+    /* Fondo de evento cuando pasas el mouse en la vista de lista */
+    --fc-list-event-hover-bg-color: var(--color-muted, #f2f5f7);
+}
+
+/* Título del calendario y los encabezados */
+.fc .fc-toolbar-title,
+.fc .fc-col-header-cell,
+.fc .fc-daygrid-day-number,
+.fc .fc-list-day-cushion {
+    color: var(--color-foreground, #004080); /* Color de texto principal en título, encabezados y número de día */
+}
+
+/* Fondo y texto de los encabezados de columna y parte superior de cada día */
+.fc .fc-col-header-cell,
+.fc .fc-daygrid-day-top {
+    background: var(--color-muted, #f2f5f7); /* Fondo sutil para encabezados */
+    color: var(--color-muted-foreground, #64748b); /* Texto secundario */
+}
+
+/* Número del día en cada celda del calendario */
+.fc .fc-daygrid-day-number {
+    color: var(--color-foreground, #004080); /* Color de número de día */
+}
+
+/* Eventos del calendario en vista mensual y lista */
+.fc .fc-event,
+.fc .fc-list-event {
+    background-color: var(--color-primary, #004080) !important; /* Fondo del evento */
+    color: var(--color-primary-foreground, #fff) !important; /* Texto del evento */
+    border: none; /* Sin borde extra */
+    border-radius: 0.375rem; /* rounded-md de Tailwind */ /* Bordes redondeados de los eventos */
+    font-size: 0.92em; /* Hace el texto de eventos un poco más pequeño */
+}
+
+/* El "dot" o punto de color que aparece en los eventos de la vista de lista */
+.fc .fc-list-event-dot {
+    border-color: var(--color-accent, #00D2B3) !important; /* Color del punto indicador del evento */
+}
+
+/* El enlace "+x más" que aparece cuando hay muchos eventos en un día */
+.fc .fc-daygrid-more-link {
+    color: var(--color-accent, #00D2B3); /* Color del enlace para ver más eventos */
+}
+
+/* Fondo del día actual */
+.fc .fc-day-today {
+    background: var(--color-muted, #f2f5f7) !important; /* Color de fondo para el día de hoy */
+    border-radius: 0.5rem; /* Bordes redondeados extra */
+    box-shadow: 0 0 0 2px var(--color-primary, #004080) inset; /* Anillo azul alrededor del día actual */
+}
+
+/* Botones del header (prev, next, today) */
+.fc .fc-button {
+    background: var(--color-primary, #004080); /* Fondo del botón */
+    /*background: var(--color-button-bg, var(--color-primary, #004080)); !* Fondo normal del botón *!*/
+    border: 1px solid var(--color-border, #e4e4e7); /* Borde del botón */
+    color: var(--color-primary-foreground, #fff); /* Texto del botón */
+    border-radius: 0.375rem; /* Bordes redondeados */
+    font-weight: 500; /* Negrita ligera */
+    transition: background 0.2s; /* Animación de fondo */
+}
+
+/* Botón cuando pasas el mouse o tiene focus */
+.fc .fc-button:hover,
+.fc .fc-button:focus {
+    background: var(--color-secondary, #00B0F0); /* Fondo hover */
+    color: var(--color-secondary-foreground, #0a2540); /* Texto hover */
+}
+
+/* Botón activo (ejemplo: botón "today" al estar seleccionado) */
+.fc .fc-button.fc-button-active {
+    background: var(--color-accent, #00D2B3); /* Fondo activo */
+    color: var(--color-accent-foreground, #0a2540); /* Texto activo */
+}
+
+/* ====== DARK MODE (con clase .dark) ====== */
+.dark .fc {
+    --fc-bg-color: var(--color-card, #141a22); /* Fondo principal del calendario en dark */
+    --fc-page-bg-color: var(--color-background, #0b1018); /* Fondo de la página/calendario */
+    --fc-border-color: var(--color-border, #222939); /* Bordes de las celdas y líneas */
+    --fc-neutral-bg-color: var(--color-muted, #181e26); /* Fondo de encabezados y días de la semana */
+    --fc-neutral-text-color: var(--color-muted-foreground, #94a3b8); /* Texto de encabezados */
+    --fc-button-bg-color: var(--color-primary, #004080); /* Fondo de los botones */
+    --fc-button-border-color: var(--color-primary, #004080); /* Borde de los botones */
+    --fc-button-text-color: var(--color-primary-foreground, #fff); /* Texto de los botones */
+    --fc-button-hover-bg-color: var(--color-secondary, #00B0F0); /* Hover fondo botones */
+    --fc-button-hover-border-color: var(--color-secondary, #00B0F0); /* Hover borde botones */
+    --fc-button-hover-text-color: var(--color-secondary-foreground, #0a2540); /* Hover texto botones */
+    --fc-button-active-bg-color: var(--color-accent, #00D2B3); /* Fondo activo botones */
+    --fc-button-active-border-color: var(--color-accent, #00D2B3); /* Borde activo botones */
+    --fc-button-active-text-color: var(--color-accent-foreground, #0a2540); /* Texto activo botones */
+    --fc-today-bg-color: var(--color-muted, #181e26); /* Fondo día actual */
+    --fc-list-event-hover-bg-color: var(--color-muted, #181e26); /* Hover fondo evento en lista */
+}
+
+/* Título, encabezados, número de día, y día de la semana en dark */
+.dark .fc .fc-toolbar-title,
+.dark .fc .fc-col-header-cell,
+.dark .fc .fc-daygrid-day-number,
+.dark .fc .fc-list-day-cushion {
+    color: var(--color-foreground, #f1f5f9); /* Color de texto en dark mode */
+}
+
+/* Fondo y texto de los encabezados de columna y parte superior de cada día en dark */
+.dark .fc .fc-col-header-cell,
+.dark .fc .fc-daygrid-day-top {
+    background: var(--color-muted, #181e26); /* Fondo encabezado en dark */
+    color: var(--color-muted-foreground, #94a3b8); /* Texto encabezado en dark */
+}
+
+/* Número del día en cada celda del calendario en dark */
+.dark .fc .fc-daygrid-day-number {
+    color: var(--color-foreground, #f1f5f9); /* Color de número de día en dark */
+}
+
+/* Eventos del calendario en dark mode */
+.dark .fc .fc-event,
+.dark .fc .fc-list-event {
+    background-color: var(--color-primary, #004080) !important; /* Fondo evento dark */
+    color: var(--color-primary-foreground, #fff) !important; /* Texto evento dark */
+    border: none; /* Sin borde extra */
+}
+
+/* El "dot" o punto de color que aparece en los eventos de la vista de lista en dark */
+.dark .fc .fc-list-event-dot {
+    border-color: var(--color-accent, #00D2B3) !important; /* Color del punto indicador del evento en dark */
+}
+
+/* El enlace "+x más" en dark */
+.dark .fc .fc-daygrid-more-link {
+    color: var(--color-accent, #00D2B3); /* Color del enlace en dark */
+}
+
+/* Fondo del día actual en dark */
+.dark .fc .fc-day-today {
+    background: var(--color-muted, #181e26) !important; /* Fondo para el día de hoy en dark */
+    box-shadow: 0 0 0 2px var(--color-primary, #004080) inset; /* Anillo azul en dark */
+}
+
+/* Popover y tooltips en dark para que no queden claros */
+.dark .fc-popover,
+.dark .fc-tooltip {
+    background: var(--color-card, #18181b); /* Fondo popover dark */
+    color: var(--color-card-foreground, #f1f5f9); /* Texto popover dark */
+    border-color: var(--color-border, #222939); /* Borde popover dark */
+}

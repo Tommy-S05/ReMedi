@@ -17,6 +17,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Spatie\LaravelPdf\Enums\Format;
 use Spatie\LaravelPdf\Facades\Pdf;
+use Spatie\LaravelPdf\PdfBuilder;
 use Throwable;
 
 final class PrescriptionController extends Controller
@@ -181,9 +182,9 @@ final class PrescriptionController extends Controller
      * Generate and stream a PDF document for the specified prescription.
      *
      * @param Prescription $prescription
-     * @return Pdf
+     * @return PdfBuilder
      */
-    public function exportPdf(Prescription $prescription): Pdf
+    public function exportPdf(Prescription $prescription): PdfBuilder
     {
         Gate::authorize('view', $prescription);
         $prescription->load('user', 'medications');
