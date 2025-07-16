@@ -73,4 +73,27 @@ export interface PaginationMeta {
     total: number;
 }
 
+/**
+ * Interface for the statistics cards on the dashboard.
+ */
+export interface DashboardStats {
+    nextDose: {
+        medication_name: string;
+        time: string;
+    } | null;
+    activeMedicationsCount: number;
+    adherencePercentage: number;
+}
+
+/**
+ * Interface for a single reminder item in the "Today's Reminders" list.
+ */
+export interface ReminderForToday {
+    medication_name: string;
+    dosage: string | null;
+    time: string; // e.g., "09:00 AM"
+    is_past: boolean;
+    status: 'taken' | 'skipped' | null;
+}
+
 export type BreadcrumbItemType = BreadcrumbItem;

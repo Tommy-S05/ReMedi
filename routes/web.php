@@ -11,9 +11,8 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('dashboard', [Controllers\DashboardController::class, 'index'])
+        ->name('dashboard');
 
     // Rutas para Medicamentos
     Route::get('medications', [Controllers\MedicationController::class, 'index'])->name('medications.index');
@@ -45,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         });
 
         Route::get('/history', [Controllers\HistoryController::class, 'fetch'])->name('history.fetch');
+        Route::get('calendar/events', [Controllers\CalendarController::class, 'getEvents'])->name('calendar.events');
     });
 });
 
