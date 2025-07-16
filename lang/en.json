@@ -451,5 +451,7 @@
     "Calendar": "Calendar",
     "Monthly Schedule": "Monthly Schedule",
     "View your scheduled doses for the month.": "View your scheduled doses for the month.",
-    "Could not load calendar events.": "Could not load calendar events."
+    "Could not load calendar events.": "Could not load calendar events.",
+    "Medical Prescription": "Medical Prescription",
+    "Patient": "Patient"
 }

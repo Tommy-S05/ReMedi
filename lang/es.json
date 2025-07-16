@@ -451,5 +451,7 @@
     "Calendar": "Calendario",
     "Monthly Schedule": "Horario Mensual",
     "View your scheduled doses for the month.": "Vea sus dosis programadas para el mes.",
-    "Could not load calendar events.": "No se pudieron cargar los eventos del calendario."
+    "Could not load calendar events.": "No se pudieron cargar los eventos del calendario.",
+    "Medical Prescription": "Prescripción Médica",
+    "Patient": "Paciente"
 }
