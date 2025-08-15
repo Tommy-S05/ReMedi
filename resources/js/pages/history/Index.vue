@@ -119,7 +119,7 @@ const getLoadMoreButtonText = () => {
         <template #page_content_header>
             <div class="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
                 <div class="mb-8 flex w-full flex-col items-center gap-4 sm:flex-row sm:justify-between">
-                    <h1 class="text-primary dark:text-remedi-light-blue flex items-center text-2xl leading-tight font-semibold">
+                    <h1 class="text-accent dark:text-remedi-light-blue flex items-center text-2xl leading-tight font-semibold">
                         <HistoryIcon class="text-secondary mr-3 inline-block h-7 w-7" />
                         {{ t('Medication History') }}
                     </h1>

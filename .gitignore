@@ -21,6 +21,7 @@ yarn-error.log
 /.idea
 /.nova
 /.vscode
+/.vercel
 /.zed
 /.idx
 _ide_helper.php
