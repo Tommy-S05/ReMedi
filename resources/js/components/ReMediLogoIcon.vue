@@ -31,8 +31,8 @@ const logoClasses = computed(() => [
   'object-contain',
   'select-none',
   {
-    'drop-shadow-sm hover:drop-shadow-md': !isDark,
-    'brightness-110 hover:brightness-125': isDark,
+    'drop-shadow-sm hover:drop-shadow-md': !isDark.value,
+    'brightness-110 hover:brightness-125': isDark.value,
   }
 ])
 
