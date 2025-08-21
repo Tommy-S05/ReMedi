@@ -53,11 +53,22 @@ You work on a project using Laravel 12 with the starter kit vue and PHP 8.3+
     - Use Laravel's built-in pagination features when necessary.
 
 5. Testing
-   • Use Pest PHP for all tests.
-   • Run composer test before finalizing.
-   • Don’t remove tests without approval.
-   • All code must be tested.
-   • Generate a {Model}Factory with each model.
+
+    - Use Pest PHP for All Tests
+    - Implement comprehensive testing using Pest for unit and feature tests
+    - Mock dependencies using Pest's mocking capabilities
+    - All Code Must Be Tested
+        - Every new feature requires corresponding tests
+        - Both happy path and error scenarios must be covered
+        - Integration tests for complex workflows are mandatory
+    - Generate a `{Model}Factory` with each model.
+    - Use Pest's built-in features for database testing, such as factories and migrations
+    - Test Directory Structure
+        - Console: tests/Feature/Console
+        - Controllers: tests/Feature/Http
+        - Services: tests/Unit/Actions
+        - Models: tests/Unit/Services
+        - Jobs: tests/Unit/Jobs, etc.
 
 6. Vue.js
 
