@@ -4,8 +4,6 @@
 
 **ReMedi** is a modern medication management web application built with the VILT stack (Vue, Inertia.js, Laravel, Tailwind CSS). The application helps users manage and track their medication schedules, prescriptions, and related medical history with a focus on user experience and reliability.
 
-You are an expert in the VILT stack: Laravel, Vue (with TypeScript), Inertiajs, Tailwind CSS, and related web development technologies with a strong emphasis on Laravel and PHP best practices.
-
 === foundation rules ===
 
 ## Foundational Context
@@ -485,23 +483,22 @@ import { Link } from '@inertiajs/vue3';
 **Inertia Vue Form Example**
 
 ```vue
+
 <script setup lang="ts">
-import { reactive } from 'vue';
-import { router } from '@inertiajs/vue3';
-import { usePage } from '@inertiajs/vue3';
-import { useForm } from '@inertiajs/vue3';
+    import { usePage } from '@inertiajs/vue3';
+    import { useForm } from '@inertiajs/vue3';
 
-const page = usePage();
+    const page = usePage();
 
-const form = useForm({
-    first_name: null,
-    last_name: null,
-    email: null,
-});
+    const form = useForm({
+        first_name: null,
+        last_name: null,
+        email: null
+    });
 
-const submit = () => {
-    form.post(route('login'));
-};
+    const submit = () => {
+        form.post(route('login'));
+    };
 </script>
 
 <template>
@@ -592,4 +589,3 @@ const submit = () => {
 - Every change must be programmatically tested. Write a new test or update an existing test, then run the affected tests to make sure they pass.
 - Run the minimum number of tests needed to ensure code quality and speed. Use `php artisan test` with a specific filename or filter.
   </laravel-boost-guidelines>
-
