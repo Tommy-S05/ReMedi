@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -19,7 +20,7 @@ final class PrescriptionFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => \App\Models\User::inRandomOrder()->first()->id,
+            'user_id' => User::factory(),
             'title' => $this->faker->optional()->sentence(3),
             'doctor_name' => $this->faker->optional()->name(),
             'prescription_date' => $this->faker->optional()->date(),

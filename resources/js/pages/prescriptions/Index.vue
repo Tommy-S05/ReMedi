@@ -241,13 +241,17 @@ const viewPrescription = (prescriptionId: number) => {
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel
+                        class="cursor-pointer"
                         @click="
                             showDeleteDialog = false;
                             prescriptionToDelete = null;
                         "
                         >{{ t('Cancel') }}</AlertDialogCancel
                     >
-                    <AlertDialogAction @click="handleDeletePrescription" class="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                    <AlertDialogAction
+                        @click="handleDeletePrescription"
+                        class="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
+                    >
                         {{ t('Delete Prescription') }}
                     </AlertDialogAction>
                 </AlertDialogFooter>

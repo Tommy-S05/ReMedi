@@ -25,6 +25,8 @@ yarn-error.log
 /.zed
 /.idx
 /.gemini
+/.claude
+/.serena
 .mcp.json
 _ide_helper.php
 _ide_helper_models.php

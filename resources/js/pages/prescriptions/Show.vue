@@ -1,20 +1,37 @@
 <script setup lang="ts">
+import ShareResourceModal from '@/components/shares/ShareResourceModal.vue';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useTranslations } from '@/composables/useTranslations';
 import AuthenticatedLayout from '@/layouts/AppLayout.vue';
-import type { Prescription, Schedule } from '@/types'; // Importar los tipos
-import { Head, Link } from '@inertiajs/vue3';
+import type { BreadcrumbItem, Prescription, Schedule } from '@/types'; // Importar los tipos
+import { Head, Link, router } from '@inertiajs/vue3';
 import {
+    AlertTriangleIcon,
     ArrowLeftIcon,
     CalendarIcon as CalendarIconLucide,
-    Edit3Icon,
     FileTextIcon,
     InfoIcon,
+    MoreVertical,
+    Pencil,
     PillIcon,
     PrinterIcon,
+    Share2,
+    Trash2,
     UserIcon,
 } from 'lucide-vue-next';
+import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 
 /**
@@ -26,6 +43,31 @@ interface Props {
 
 const props = defineProps<Props>();
 const { t } = useTranslations();
+
+const isShareModalOpen = ref(false);
+const showDeleteDialog = ref(false);
+const prescriptionToDelete = ref<Prescription | null>(null);
+
+const shareableResource = {
+    id: props.prescription.id,
+    type: 'prescription' as const,
+    name: props.prescription.title || undefined,
+};
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: t('Dashboard'),
+        href: route('dashboard'),
+    },
+    {
+        title: t('Prescriptions'),
+        href: route('prescriptions.index'),
+    },
+    {
+        title: props.prescription.title || t('Prescription #') + props.prescription.id,
+        href: route('prescriptions.show', props.prescription.id),
+    },
+];
 
 /**
  * Formatea los días de la semana para visualización.
@@ -60,14 +102,42 @@ const formatMedicationScheduleInfo = (schedule: Schedule): string => {
     return info;
 };
 
-const exportToPDF = () => {
-    toast.info(t('Coming soon!'), { description: t('PDF export functionality will be available soon.') });
+/**
+ * Abre el diálogo de confirmación para eliminar una prescripción.
+ * @param {Prescription} prescription - La prescripción a eliminar.
+ */
+const confirmDeletePrescription = (prescription: Prescription) => {
+    prescriptionToDelete.value = prescription;
+    showDeleteDialog.value = true;
+};
+
+/**
+ * Ejecuta la eliminación de la prescripción.
+ */
+const handleDeletePrescription = () => {
+    if (!prescriptionToDelete.value) return;
+    router.delete(route('prescriptions.destroy', prescriptionToDelete.value.id), {
+        preserveScroll: true,
+        preserveState: false,
+        onSuccess: () => {
+            prescriptionToDelete.value = null;
+            showDeleteDialog.value = false;
+        },
+        onError: (errors) => {
+            const errorMessages = Object.values(errors).join(' ');
+            toast.error(t('Deletion Failed'), {
+                description: errorMessages || t('Could not delete the prescription. Please try again.'),
+            });
+            prescriptionToDelete.value = null;
+            showDeleteDialog.value = false;
+        },
+    });
 };
 </script>
 
 <template>
     <Head :title="t('Prescription Details') + (props.prescription.title ? ` - ${props.prescription.title}` : ` #${props.prescription.id}`)" />
-    <AuthenticatedLayout>
+    <AuthenticatedLayout :breadcrumbs="breadcrumbs">
         <template #page_content_header>
             <div class="mx-auto w-full max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
                 <div class="xs:flex-row xs:items-center xs:justify-between mb-8 flex w-full flex-col gap-4">
@@ -86,7 +156,7 @@ const exportToPDF = () => {
                                 {{ t('Back to Prescriptions') }}
                             </Button>
                         </Link>
-                        <Link :href="route('prescriptions.edit', props.prescription.id)">
+                        <!-- <Link :href="route('prescriptions.edit', props.prescription.id)">
                             <Button
                                 variant="default"
                                 size="default"
@@ -95,24 +165,54 @@ const exportToPDF = () => {
                                 <Edit3Icon class="mr-2 h-4 w-4" />
                                 {{ t('Edit Prescription') }}
                             </Button>
-                        </Link>
+                        </Link> -->
                     </div>
                 </div>
             </div>
         </template>
 
         <div class="animate-in fade-in-0 pb-8 duration-500 md:pb-12">
-            <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <Card class="bg-card text-card-foreground border-border/50 overflow-hidden shadow-xl">
                     <CardHeader class="bg-muted/30 border-border/60 border-b p-6">
                         <div class="flex items-center justify-between">
                             <CardTitle class="text-primary dark:text-remedi-light-blue text-xl">{{ t('Prescription Information') }}</CardTitle>
-                            <a :href="route('prescriptions.export.pdf', props.prescription.id)" target="_blank">
-                                <Button variant="outline" size="sm" @click="exportToPDF" class="hover:dark:text-secondary ml-auto">
-                                    <PrinterIcon class="mr-2 h-4 w-4" />
-                                    {{ t('Export to PDF') }}
+                            <div class="flex items-center gap-2">
+                                <a :href="route('prescriptions.export.pdf', props.prescription.id)" target="_blank">
+                                    <Button variant="outline" size="sm" class="hover:dark:text-secondary ml-auto">
+                                        <PrinterIcon class="mr-2 h-4 w-4" />
+                                        {{ t('Export to PDF') }}
+                                    </Button>
+                                </a>
+                                <Button variant="outline" @click="isShareModalOpen = true" class="hover:dark:text-secondary">
+                                    <Share2 name="share-2" class="mr-2 h-4 w-4" />
+                                    {{ t('Share') }}
                                 </Button>
-                            </a>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger as-child>
+                                        <Button variant="ghost" size="icon">
+                                            <MoreVertical class="h-4 w-4" />
+                                        </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent align="end">
+                                        <Link :href="route('prescriptions.edit', prescription.id)">
+                                            <DropdownMenuItem class="flex cursor-pointer items-center gap-2">
+                                                <Pencil class="h-4 w-4" />
+                                                <span>{{ t('Edit') }}</span>
+                                            </DropdownMenuItem>
+                                        </Link>
+                                        <DropdownMenuSeparator />
+                                        <DropdownMenuItem
+                                            class="flex cursor-pointer items-center gap-2 text-red-600 hover:text-red-600 focus:text-red-600"
+                                            @click="confirmDeletePrescription(props.prescription)"
+                                            :aria-label="t('Edit') + ' ' + (props.prescription.title || `Prescription ${prescription.id}`)"
+                                        >
+                                            <Trash2 class="h-4 w-4" />
+                                            <span>{{ t('Delete') }}</span>
+                                        </DropdownMenuItem>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
                         </div>
                         <CardDescription
                             v-if="props.prescription.doctor_name || props.prescription.prescription_date_formatted"
@@ -203,5 +303,41 @@ const exportToPDF = () => {
                 </Card>
             </div>
         </div>
+
+        <ShareResourceModal v-if="isShareModalOpen" v-model="isShareModalOpen" :resource="shareableResource" />
+
+        <AlertDialog :open="showDeleteDialog" @update:open="showDeleteDialog = $event">
+            <AlertDialogContent v-if="prescriptionToDelete">
+                <AlertDialogHeader>
+                    <AlertDialogTitle class="flex items-center">
+                        <AlertTriangleIcon class="text-destructive mr-2 h-5 w-5" />
+                        {{ t('Confirm Deletion') }}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription>
+                        {{
+                            t('Are you sure you want to delete this prescription (:title)? This action cannot be undone.', {
+                                title: prescriptionToDelete.title || '#' + prescriptionToDelete.id,
+                            })
+                        }}
+                    </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                    <AlertDialogCancel
+                        class="cursor-pointer"
+                        @click="
+                            showDeleteDialog = false;
+                            prescriptionToDelete = null;
+                        "
+                        >{{ t('Cancel') }}</AlertDialogCancel
+                    >
+                    <AlertDialogAction
+                        @click="handleDeletePrescription"
+                        class="bg-destructive text-destructive-foreground hover:bg-destructive/90 cursor-pointer"
+                    >
+                        {{ t('Delete Prescription') }}
+                    </AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
     </AuthenticatedLayout>
 </template>

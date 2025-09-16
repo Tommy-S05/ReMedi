@@ -18,7 +18,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('medications', [Controllers\MedicationController::class, 'index'])->name('medications.index');
     Route::get('medications/create', [Controllers\MedicationController::class, 'create'])->name('medications.create');
     Route::post('medications', [Controllers\MedicationController::class, 'store'])->name('medications.store');
-    // Route::get('medications/{medication}', [Controllers\MedicationController::class, 'show'])->name('medications.show');
+    Route::get('medications/{medication}', [Controllers\MedicationController::class, 'show'])->name('medications.show');
     Route::get('medications/{medication}/edit', [Controllers\MedicationController::class, 'edit'])->name('medications.edit');
     Route::put('medications/{medication}', [Controllers\MedicationController::class, 'update'])->name('medications.update');
     Route::delete('medications/{medication}', [Controllers\MedicationController::class, 'destroy'])->name('medications.destroy');
@@ -30,6 +30,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // --- Ruta para el Historial de Tomas ---
     Route::get('/history', [Controllers\HistoryController::class, 'index'])->name('history.index');
+
+    // --- Rutas para Compartir Recursos ---
+    Route::post('/shares', [Controllers\ShareController::class, 'store'])->name('shares.store');
 
     // Rutas Api con la autenticación de Web
     Route::prefix('api')->group(function () {
@@ -47,6 +50,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('calendar/events', [Controllers\CalendarController::class, 'getEvents'])->name('calendar.events');
     });
 });
+
+Route::get('/shares/accept/{token}', [Controllers\ShareController::class, 'accept'])
+    ->middleware('signed')
+    ->name('shares.accept');
 
 require __DIR__ . '/settings.php';
 require __DIR__ . '/auth.php';

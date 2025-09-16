@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Contracts\ShareableResourceInterface;
+use App\Models\Concerns\Shareable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -25,6 +27,19 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $medications_count
  * @property-read Carbon|null $prescription_date_formatted
  * @property-read User $user
+ * @property-read Collection<int, ResourceShare> $shares
+ * @property-read int|null $shares_count
+ * @property-read Collection<int, ResourceShare> $activeShares
+ * @property-read int|null $active_shares_count
+ * @property-read Collection<int, ResourceShare> $pendingShares
+ * @property-read int|null $pending_shares_count
+ * @property-read bool $isSharedWith
+ * @property-read bool $isSharedWithEmail
+ * @property-read Collection<int, User> $sharedWithUsers
+ * @property-read int|null $shared_with_users_count
+ * @property-read bool $canBeSharedBy
+ * @property-read bool $getShareableTypeName
+ * @property-read array<string, string|null> $getShareableData
  *
  * @method static \Database\Factories\PrescriptionFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Prescription newModelQuery()
@@ -41,10 +56,10 @@ use Illuminate\Support\Carbon;
  *
  * @mixin \Eloquent
  */
-final class Prescription extends Model
+final class Prescription extends Model implements ShareableResourceInterface
 {
     /** @use HasFactory<\Database\Factories\PrescriptionFactory> */
-    use HasFactory;
+    use HasFactory, Shareable;
 
     /**
      * The attributes that are mass assignable.
@@ -95,6 +110,32 @@ final class Prescription extends Model
         return $this->belongsToMany(Medication::class, 'medication_prescription')
             ->withPivot(['dosage_on_prescription', 'quantity_prescribed', 'instructions_on_prescription'])
             ->withTimestamps();
+    }
+
+    /**
+     * Determine if the user can share this resource.
+     */
+    public function canBeSharedBy(User $user): bool
+    {
+        return $this->user_id === $user->id;
+    }
+
+    /**
+     * Get the display name of the resource type.
+     */
+    public function getShareableTypeName(): string
+    {
+        return 'Prescription'; // Corregido: Debería ser 'Prescription'
+    }
+
+    /**
+     * Get additional data for the notification.
+     */
+    public function getShareableData(): array
+    {
+        return [
+            'name' => $this->title, // Corregido: Debería ser 'title'
+        ];
     }
 
     /**

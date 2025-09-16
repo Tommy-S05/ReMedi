@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Contracts\ShareableResourceInterface;
 use App\Enums\MedicationTypeEnum;
+use App\Models\Concerns\Shareable;
 use Eloquent;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -36,6 +38,19 @@ use Illuminate\Support\Carbon;
  * @property-read int|null $take_logs_count
  * @property-read string|null $type_label
  * @property-read User $user
+ * @property-read Collection<int, ResourceShare> $shares
+ * @property-read int|null $shares_count
+ * @property-read Collection<int, ResourceShare> $activeShares
+ * @property-read int|null $active_shares_count
+ * @property-read Collection<int, ResourceShare> $pendingShares
+ * @property-read int|null $pending_shares_count
+ * @property-read bool $isSharedWith
+ * @property-read bool $isSharedWithEmail
+ * @property-read Collection<int, User> $sharedWithUsers
+ * @property-read int|null $shared_with_users_count
+ * @property-read bool $canBeSharedBy
+ * @property-read bool $getShareableTypeName
+ * @property-read array<string, string|null> $getShareableData
  *
  * @method static \Database\Factories\MedicationFactory factory($count = null, $state = [])
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Medication newModelQuery()
@@ -54,10 +69,10 @@ use Illuminate\Support\Carbon;
  *
  * @mixin Eloquent
  */
-final class Medication extends Model
+final class Medication extends Model implements ShareableResourceInterface
 {
     /** @use HasFactory<\Database\Factories\MedicationFactory> */
-    use HasFactory;
+    use HasFactory, Shareable;
 
     /**
      * The attributes that are mass assignable.
@@ -131,6 +146,33 @@ final class Medication extends Model
     public function takeLogs(): HasMany
     {
         return $this->hasMany(MedicationTakeLog::class);
+    }
+
+    /**
+     * Determine if the user can share this resource.
+     */
+    public function canBeSharedBy(User $user): bool
+    {
+        return $this->user_id === $user->id;
+    }
+
+    /**
+     * Get the display name of the resource type.
+     */
+    public function getShareableTypeName(): string
+    {
+        return 'Medication';
+    }
+
+    /**
+     * Get additional data for the notification.
+     */
+    public function getShareableData(): array
+    {
+        return [
+            'name' => $this->name,
+            'dosage' => $this->dosage,
+        ];
     }
 
     /**

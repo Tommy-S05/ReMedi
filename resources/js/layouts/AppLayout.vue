@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Toaster } from '@/components/ui/sonner';
+import { useTranslations } from '@/composables/useTranslations';
 import AppSidebarLayout from '@/layouts/app/AppSidebarLayout.vue';
 import type { BreadcrumbItemType, FlashMessages, SharedData } from '@/types';
 import { usePage } from '@inertiajs/vue3';
@@ -17,6 +18,8 @@ withDefaults(defineProps<Props>(), {
 // Para acceder a las props compartidas, incluyendo 'flash'
 const page = usePage<SharedData>();
 
+const { t } = useTranslations();
+
 /**
  * Muestra un toast basado en el tipo y mensaje.
  * @param {keyof FlashMessages} type - El tipo de mensaje (success, error, etc.).
@@ -27,16 +30,16 @@ const showToast = (type: keyof FlashMessages, message: string | undefined) => {
 
     switch (type) {
         case 'success':
-            toast.success('Success!', { description: message, duration: 5000 });
+            toast.success(t('Success!'), { description: t(message), duration: 5000 });
             break;
         case 'error':
-            toast.error('Error!', { description: message, duration: 7000 });
+            toast.error(t('Error!'), { description: t(message), duration: 7000 });
             break;
         case 'warning':
-            toast.warning('Warning!', { description: message, duration: 6000 });
+            toast.warning(t('Warning!'), { description: t(message), duration: 6000 });
             break;
         case 'info':
-            toast.info('Info', { description: message, duration: 5000 });
+            toast.info(t('Info'), { description: t(message), duration: 5000 });
             break;
     }
 };

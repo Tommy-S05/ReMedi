@@ -89,7 +89,16 @@ final class MedicationController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Medication $medication) {}
+    public function show(Medication $medication)
+    {
+        Gate::authorize('view', $medication);
+        $medication->load(['schedules', 'prescriptions']);
+        // dd($medication);
+
+        return Inertia::render('medications/Show', [
+            'medication' => $medication,
+        ]);
+    }
 
     /**
      * Show the form for editing the specified medication.

@@ -86,4 +86,12 @@ final class PrescriptionPolicy
     {
         return false;
     }
+
+    /**
+     * Determine whether the user can share the model.
+     */
+    public function share(User $user, Prescription $prescription): bool
+    {
+        return $user->id === $prescription->user_id;
+    }
 }
