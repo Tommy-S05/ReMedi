@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue';
 import ReMediLogoIcon from '@/components/ReMediLogoIcon.vue';
 import ThemeSwitcher from '@/components/ThemeSwitcher.vue';
 import { Button } from '@/components/ui/button';
@@ -232,6 +233,7 @@ const closeTabletMenu = () => {
                                 <Play class="mr-2 h-4 w-4" />
                                 {{ t('Watch Demo') }}
                             </Button> -->
+                        <LanguageSwitcher variant="ghost" size="default" />
                         <ThemeSwitcher />
                     </div>
                 </div>
@@ -345,6 +347,7 @@ const closeTabletMenu = () => {
                             <Button size="sm" class="bg-primary hover:bg-primary/90 text-primary-foreground"> {{ t('Register') }} </Button>
                         </Link>
                     </template>
+                    <LanguageSwitcher variant="ghost" size="sm" />
                     <ThemeSwitcher />
                 </div>
 
@@ -376,11 +379,13 @@ const closeTabletMenu = () => {
                         </Link>
                     </template>
 
+                    <LanguageSwitcher variant="ghost" size="sm" />
                     <ThemeSwitcher />
                 </div>
 
                 <!-- Mobile menu button -->
                 <div class="flex items-center space-x-2 md:hidden">
+                    <LanguageSwitcher variant="ghost" size="icon" :showLabel="false" />
                     <ThemeSwitcher />
                     <Button variant="ghost" size="icon" @click="toggleMobileMenu" :aria-label="isMobileMenuOpen ? t('Close Menu') : t('Open Menu')">
                         <Menu v-if="!isMobileMenuOpen" class="h-6 w-6" />

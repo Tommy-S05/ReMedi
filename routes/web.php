@@ -10,6 +10,10 @@ Route::get('/', function () {
     return Inertia::render('Welcome');
 })->name('home');
 
+// Language switching route
+Route::post('/language/{locale}', [Controllers\LanguageController::class, 'change'])
+    ->name('language.change');
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dashboard', [Controllers\DashboardController::class, 'index'])
         ->name('dashboard');

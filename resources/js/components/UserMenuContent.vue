@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import UserInfo from '@/components/UserInfo.vue';
 import { DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from '@/components/ui/dropdown-menu';
+import { useTranslations } from '@/composables/useTranslations';
 import type { User } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { LogOut, Settings } from 'lucide-vue-next';
@@ -10,6 +11,8 @@ interface Props {
 }
 
 defineProps<Props>();
+
+const { t } = useTranslations();
 </script>
 
 <template>
@@ -23,7 +26,7 @@ defineProps<Props>();
         <DropdownMenuItem :as-child="true">
             <Link class="block w-full" :href="route('profile.edit')" as="button">
                 <Settings class="mr-2 h-4 w-4" />
-                Settings
+                {{ t('Settings') }}
             </Link>
         </DropdownMenuItem>
     </DropdownMenuGroup>
@@ -31,7 +34,7 @@ defineProps<Props>();
     <DropdownMenuItem :as-child="true">
         <Link class="block w-full" method="post" :href="route('logout')" as="button">
             <LogOut class="mr-2 h-4 w-4" />
-            Log out
+            {{ t('Log out') }}
         </Link>
     </DropdownMenuItem>
 </template>
