@@ -24,6 +24,10 @@ yarn-error.log
 /.vercel
 /.zed
 /.idx
+/.gemini
+/.claude
+/.serena
+.mcp.json
 _ide_helper.php
 _ide_helper_models.php
 .phpstorm.meta.php

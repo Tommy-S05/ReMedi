@@ -126,6 +126,14 @@ const handleDeleteMedication = () => {
 const editMedication = (medicationId: number) => {
     router.get(route('medications.edit', medicationId)); // <--- ACTUALIZADO AQUÍ
 };
+
+/**
+ * Navega a la página de visualización del medicamento.
+ * @param {number} medicationId - El ID del medicamento a ver.
+ */
+const viewMedication = (medicationId: number) => {
+    router.get(route('medications.show', medicationId));
+};
 </script>
 
 <template>
@@ -179,7 +187,7 @@ const editMedication = (medicationId: number) => {
                         v-for="medication in props.medications"
                         :key="medication.id"
                         class="bg-card text-card-foreground shadow-remedi-mint-green/20 hover:shadow-remedi-mint-green/50 flex cursor-pointer flex-col overflow-hidden rounded-xl shadow-lg transition-all duration-300 ease-out hover:-translate-y-1 hover:scale-[1.02]"
-                        @click="editMedication(medication.id)"
+                        @click="viewMedication(medication.id)"
                         tabindex="0"
                         @keydown.enter="editMedication(medication.id)"
                     >

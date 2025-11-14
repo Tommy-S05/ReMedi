@@ -6,12 +6,13 @@ import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, Sid
 import { useTranslations } from '@/composables/useTranslations';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
 import { LayoutGrid, Pill, FileTextIcon, ClockIcon } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const { t } = useTranslations();
 
-const mainNavItems: NavItem[] = [
+const mainNavItems = computed<NavItem[]>(() => [
     {
         title: t('Dashboard'),
         href: route('dashboard'),
@@ -32,9 +33,9 @@ const mainNavItems: NavItem[] = [
         href: route('history.index'),
         icon: ClockIcon,
     }
-];
+]);
 
-const footerNavItems: NavItem[] = [
+const footerNavItems = computed<NavItem[]>(() => [
     // {
     //     title: 'Github Repo',
     //     href: 'https://github.com/laravel/vue-starter-kit',
@@ -45,7 +46,7 @@ const footerNavItems: NavItem[] = [
     //     href: 'https://laravel.com/docs/starter-kits',
     //     icon: BookOpen,
     // },
-];
+]);
 </script>
 
 <template>

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,7 +26,7 @@ final class MedicationFactory extends Factory
             'strength' => $this->faker->randomElement(['10mg', '20mg', '50mg', '100mg', null]),
             'quantity' => $this->faker->optional()->numberBetween(10, 100),
             'instructions' => $this->faker->sentence(),
-            'user_id' => \App\Models\User::inRandomOrder()->first()->id,
+            'user_id' => User::factory(),
         ];
     }
 }

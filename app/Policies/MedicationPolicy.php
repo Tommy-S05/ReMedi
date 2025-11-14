@@ -6,15 +6,18 @@ namespace App\Policies;
 
 use App\Models\Medication;
 use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
 
 final class MedicationPolicy
 {
+    use HandlesAuthorization;
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +25,7 @@ final class MedicationPolicy
      */
     public function view(User $user, Medication $medication): bool
     {
-        return false;
+        return $user->id === $medication->user_id || $medication->isSharedWith($user);
     }
 
     /**
@@ -30,7 +33,7 @@ final class MedicationPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -71,5 +74,13 @@ final class MedicationPolicy
     public function forceDelete(User $user, Medication $medication): bool
     {
         return false;
+    }
+
+    /**
+     * Determine whether the user can share the model.
+     */
+    public function share(User $user, Medication $medication): bool
+    {
+        return $medication->canBeSharedBy($user);
     }
 }

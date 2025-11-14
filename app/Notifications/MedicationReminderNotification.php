@@ -80,7 +80,6 @@ final class MedicationReminderNotification extends Notification implements Shoul
             'time_to_take' => $this->schedule->time_to_take, // HH:mm de la configuración del schedule
             'instructions' => $this->medication->instructions,
             // Podrías añadir un mensaje pre-formateado y traducido aquí también
-            // TODO : añadir key al archivo de traducciones
             'message_key' => 'Take your medication reminder', // Clave para traducción en el frontend
             'message_params' => [ // Parámetros para la traducción
                 'time' => $this->reminderTime->copy()->setTimezone($notifiable->timezone ?? config('app.timezone'))->format('h:i A'), // Hora en la zona horaria del usuario

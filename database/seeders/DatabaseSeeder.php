@@ -27,6 +27,8 @@ final class DatabaseSeeder extends Seeder
         $this->call([
             MedicationSeeder::class,
             PrescriptionSeeder::class,
+            MedicationTakeLogSeeder::class,
+            ResourceShareSeeder::class,
         ]);
     }
 }
