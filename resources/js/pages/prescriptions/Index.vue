@@ -9,6 +9,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslations } from '@/composables/useTranslations';
@@ -23,6 +24,7 @@ import {
     InfoIcon,
     PillIcon,
     PlusCircleIcon,
+    Share2,
     Trash2Icon,
     UserIcon,
 } from 'lucide-vue-next'; // UserMdIcon para doctor
@@ -156,9 +158,17 @@ const viewPrescription = (prescriptionId: number) => {
                     >
                         <CardHeader class="border-border/60 bg-muted/20 dark:bg-muted/5 border-b p-5 pb-4">
                             <div class="flex items-start justify-between">
-                                <CardTitle class="text-primary dark:text-remedi-light-blue mb-1 text-lg leading-tight font-semibold">
-                                    {{ prescription.title || t('Prescription') + ` #${prescription.id}` }}
-                                </CardTitle>
+                                <div class="flex flex-col gap-1.5">
+                                    <div class="flex items-center gap-2">
+                                        <CardTitle class="text-primary dark:text-remedi-light-blue text-lg leading-tight font-semibold">
+                                            {{ prescription.title || t('Prescription') + ` #${prescription.id}` }}
+                                        </CardTitle>
+                                        <Badge v-if="prescription.accepted_shares_count && prescription.accepted_shares_count > 0" variant="secondary" class="flex items-center gap-1 text-xs">
+                                            <Share2 class="h-3 w-3" />
+                                            {{ t('Shared') }}
+                                        </Badge>
+                                    </div>
+                                </div>
                                 <div class="flex space-x-1 rtl:space-x-reverse">
                                     <Button
                                         @click.stop="editPrescription(prescription.id)"

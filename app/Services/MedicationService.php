@@ -6,6 +6,7 @@ namespace App\Services;
 
 use App\Enums\MedicationScheduleFrequencyEnum;
 use App\Enums\MedicationTypeEnum;
+use App\Enums\ShareStatusEnum;
 use App\Models\Medication;
 use App\Models\MedicationSchedule;
 use App\Models\User;
@@ -29,17 +30,18 @@ final class MedicationService
      */
     public function getMedicationsForUser(User $user): Collection
     {
-        $medications = $user->medications()
+        return $user->medications()
             ->with([
                 'schedules' => function ($query) {
                     $query->orderBy('time_to_take', 'asc')
                         ->orderBy('start_date', 'asc');
                 },
             ])
+            ->withCount(['shares as accepted_shares_count' => function ($query) {
+                $query->where('status', ShareStatusEnum::ACCEPTED);
+            }])
             ->latest()
             ->get();
-
-        return $medications;
     }
 
     /**

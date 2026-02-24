@@ -9,6 +9,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useTranslations } from '@/composables/useTranslations';
@@ -17,7 +18,18 @@ import AuthenticatedLayout from '@/layouts/AppLayout.vue';
 import type { Medication, Schedule } from '@/types';
 import { BreadcrumbItem } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
-import { AlertTriangleIcon, CalendarDaysIcon, ClockIcon, Edit3Icon, InfoIcon, PillIcon, PlusCircleIcon, TagIcon, Trash2Icon } from 'lucide-vue-next'; // TagIcon para el tipo
+import {
+    AlertTriangleIcon,
+    CalendarDaysIcon,
+    ClockIcon,
+    Edit3Icon,
+    InfoIcon,
+    PillIcon,
+    PlusCircleIcon,
+    Share2,
+    TagIcon,
+    Trash2Icon,
+} from 'lucide-vue-next';
 import { ref } from 'vue';
 import { toast } from 'vue-sonner';
 
@@ -182,7 +194,7 @@ const viewMedication = (medicationId: number) => {
                     </div>
                 </div>
 
-                <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div v-else class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     <Card
                         v-for="medication in props.medications"
                         :key="medication.id"
@@ -191,8 +203,18 @@ const viewMedication = (medicationId: number) => {
                         tabindex="0"
                         @keydown.enter="editMedication(medication.id)"
                     >
-                        <CardHeader class="border-border/60 bg-muted/20 dark:bg-muted/5 border-b p-5 pb-4">
-                            <div class="flex items-start justify-between">
+                        <CardHeader class="border-border/60 bg-muted/20 dark:bg-muted/5 border-b pt-1 px-5 pb-4">
+                            <Badge
+                                v-if="medication.accepted_shares_count && medication.accepted_shares_count > 0"
+                                variant="secondary"
+                                class="flex items-center gap-1 text-xs w-fit"
+                            >
+                                <Share2 class="h-3 w-3" />
+                                {{ t('Shared') }}
+                            </Badge>
+                            <div class="flex items-start justify-between"
+                                :class="{'pt-7': !medication.accepted_shares_count}"
+                            >
                                 <CardTitle class="text-primary dark:text-remedi-light-blue mb-1 text-lg leading-tight font-semibold">
                                     {{ medication.name }}
                                 </CardTitle>

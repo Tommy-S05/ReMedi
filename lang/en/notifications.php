@@ -23,4 +23,14 @@ return [
             'line_3' => 'If you did not expect this invitation, you can safely ignore this email.',
         ],
     ],
+    'share_accepted' => [
+        'email' => [
+            'subject' => ':recipientName has accepted your shared resource',
+            'greeting' => 'Hello :name,',
+            'line_1' => "Great news! **:recipientName** has accepted access to your **:resourceType** called **':resourceName'**.",
+            'line_2' => 'They can now view and track this resource.',
+            'action' => 'View Shared Resource',
+            'line_3' => 'You can revoke access at any time from the Shared Resources page.',
+        ],
+    ],
 ];

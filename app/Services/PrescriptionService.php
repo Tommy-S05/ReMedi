@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Enums\ShareStatusEnum;
 use App\Models\Medication;
 use App\Models\Prescription;
 use App\Models\User; // Importar
@@ -125,6 +126,10 @@ final class PrescriptionService
         if ($withMedications) {
             $query->with('medications');
         }
+
+        $query->withCount(['shares as accepted_shares_count' => function ($query) {
+            $query->where('status', ShareStatusEnum::ACCEPTED);
+        }]);
 
         return $query->get();
     }

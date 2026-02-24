@@ -15,6 +15,7 @@ export interface Medication {
     strength: string | null;
     quantity: number | null;
     instructions: string | null;
+    accepted_shares_count?: number | null;
     created_at: string;
     updated_at: string;
     schedules: Schedule[];

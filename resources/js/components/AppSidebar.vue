@@ -7,7 +7,7 @@ import { useTranslations } from '@/composables/useTranslations';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
-import { LayoutGrid, Pill, FileTextIcon, ClockIcon } from 'lucide-vue-next';
+import { LayoutGrid, Pill, FileTextIcon, ClockIcon, Share2 } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
 const { t } = useTranslations();
@@ -32,6 +32,11 @@ const mainNavItems = computed<NavItem[]>(() => [
         title: t('History'),
         href: route('history.index'),
         icon: ClockIcon,
+    },
+    {
+        title: t('Shared Resources'),
+        href: route('shares.index'),
+        icon: Share2,
     }
 ]);
 

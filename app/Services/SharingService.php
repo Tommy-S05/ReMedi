@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\ShareableResourceInterface;
 use App\Enums\ShareStatusEnum;
 use App\Models\ResourceShare;
 use App\Models\User;
 use App\Notifications\ResourceSharedNotification;
+use App\Notifications\ShareAcceptedNotification;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -25,7 +27,7 @@ final class SharingService
      * Create and send a sharing invitation.
      *
      * @param User $owner The user who is sharing the resource.
-     * @param Model $shareable The resource being shared (Medication or Prescription).
+     * @param ShareableResourceInterface&Model $shareable The resource being shared (Medication or Prescription).
      * @param string $recipientEmail The email of the person to share with.
      * @return ResourceShare
      *
@@ -94,7 +96,11 @@ final class SharingService
                 'status' => ShareStatusEnum::ACCEPTED,
             ]);
 
-            // $share->owner->notify(new ShareAcceptedNotification($share));
+            // Reload relationships to ensure they're available for the notification
+            $share->load(['owner', 'sharedWithUser', 'shareable']);
+
+            // Notify the owner that their share was accepted
+            $share->owner->notify(new ShareAcceptedNotification($share));
 
             return $share;
         });
@@ -125,13 +131,26 @@ final class SharingService
      * @param User $user
      * @return Collection<int|string, Collection<int, ResourceShare>>
      */
-    public function getSharedResources(User $user): Collection
+    public function getResourcesSharedWithUser(User $user): Collection
     {
         return ResourceShare::where('shared_with_user_id', $user->id)
             ->where('status', ShareStatusEnum::ACCEPTED)
-            ->with('shareable')
-            ->get()
-            ->groupBy('shareable_type');
+            ->with(['shareable', 'owner'])
+            ->get();
+    }
+
+    /**
+     * Get all resources shared by a user (outgoing shares).
+     *
+     * @param User $user
+     * @return Collection<int, ResourceShare>
+     */
+    public function getResourcesSharedByUser(User $user): Collection
+    {
+        return ResourceShare::where('owner_user_id', $user->id)
+            ->with(['shareable', 'sharedWithUser'])
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 
     /**

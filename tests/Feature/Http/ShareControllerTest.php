@@ -10,6 +10,7 @@ use App\Models\Prescription;
 use App\Models\ResourceShare;
 use App\Models\User;
 use App\Notifications\ResourceSharedNotification;
+use App\Notifications\ShareAcceptedNotification;
 use App\Services\SharingService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Notifications\AnonymousNotifiable;
@@ -143,6 +144,8 @@ describe('POST /shares', function () {
 
 describe('GET /shares/accept/{token}', function () {
     it('allows a logged-in user to accept a valid invitation', function () {
+        Notification::fake();
+
         $invitation = $this->sharingService->createInvitation($this->owner, $this->medication, $this->recipient->email);
 
         $signedUrl = URL::temporarySignedRoute(
@@ -159,6 +162,15 @@ describe('GET /shares/accept/{token}', function () {
             'status' => ShareStatusEnum::ACCEPTED->value,
             'shared_with_user_id' => $this->recipient->id,
         ]);
+
+        // Verify that the owner was notified
+        Notification::assertSentTo(
+            $this->owner,
+            ShareAcceptedNotification::class,
+            function ($notification, $channels) use ($invitation) {
+                return $notification->share->id === $invitation->id;
+            }
+        );
     });
 
     it('redirects a guest to the login page with an intended URL', function () {
@@ -181,5 +193,119 @@ describe('GET /shares/accept/{token}', function () {
         actingAs($user)
             ->get($signedUrl)
             ->assertStatus(400);
+    });
+});
+
+describe('GET /shares', function () {
+    it('displays shared resources for authenticated users', function () {
+        actingAs($this->recipient)
+            ->get(route('shares.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('shares/Index')
+                ->has('sharedWithMe')
+                ->has('sharedByMe')
+            );
+    });
+
+    it('shows resources shared with the user', function () {
+        // Create a share where recipient receives
+        $share = $this->sharingService->createInvitation($this->owner, $this->medication, $this->recipient->email);
+        $this->sharingService->acceptInvitation($share->token, $this->recipient);
+
+        actingAs($this->recipient)
+            ->get(route('shares.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('shares/Index')
+                ->where('sharedWithMe.0.shareable_type_label', 'Medication')
+                ->where('sharedWithMe.0.shareable.name', $this->medication->name)
+                ->where('sharedWithMe.0.owner.name', $this->owner->name)
+            );
+    });
+
+    it('shows resources shared by the user', function () {
+        // Create a share where owner shares
+        $this->sharingService->createInvitation($this->owner, $this->medication, $this->recipient->email);
+
+        actingAs($this->owner)
+            ->get(route('shares.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('shares/Index')
+                ->where('sharedByMe.0.shareable_type_label', 'Medication')
+                ->where('sharedByMe.0.shareable.name', $this->medication->name)
+                ->where('sharedByMe.0.shared_with_email', $this->recipient->email)
+                ->where('sharedByMe.0.status_label', 'Pending')
+            );
+    });
+
+    it('does not show pending shares in sharedWithMe', function () {
+        // Create a pending share
+        $this->sharingService->createInvitation($this->owner, $this->medication, $this->recipient->email);
+
+        actingAs($this->recipient)
+            ->get(route('shares.index'))
+            ->assertOk()
+            ->assertInertia(fn ($page) => $page
+                ->component('shares/Index')
+                ->where('sharedWithMe', [])
+            );
+    });
+
+    it('redirects guests to login', function () {
+        get(route('shares.index'))
+            ->assertRedirect(route('login'));
+    });
+});
+
+describe('DELETE /shares/{share}', function () {
+    it('allows the owner to revoke a share', function () {
+        $share = $this->sharingService->createInvitation($this->owner, $this->medication, $this->recipient->email);
+
+        actingAs($this->owner)
+            ->delete(route('shares.revoke', $share->id))
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('resource_shares', [
+            'id' => $share->id,
+            'status' => ShareStatusEnum::REVOKED->value,
+        ]);
+    });
+
+    it('prevents non-owners from revoking a share', function () {
+        $share = $this->sharingService->createInvitation($this->owner, $this->medication, $this->recipient->email);
+        $otherUser = User::factory()->create();
+
+        actingAs($otherUser)
+            ->delete(route('shares.revoke', $share->id))
+            ->assertRedirect()
+            ->assertSessionHasErrors('error');
+
+        $this->assertDatabaseHas('resource_shares', [
+            'id' => $share->id,
+            'status' => ShareStatusEnum::PENDING->value,
+        ]);
+    });
+
+    it('prevents the recipient from revoking a share', function () {
+        $share = $this->sharingService->createInvitation($this->owner, $this->medication, $this->recipient->email);
+
+        actingAs($this->recipient)
+            ->delete(route('shares.revoke', $share->id))
+            ->assertRedirect()
+            ->assertSessionHasErrors('error');
+
+        $this->assertDatabaseHas('resource_shares', [
+            'id' => $share->id,
+            'status' => ShareStatusEnum::PENDING->value,
+        ]);
+    });
+
+    it('redirects guests to login', function () {
+        $share = ResourceShare::factory()->create();
+
+        \Pest\Laravel\delete(route('shares.revoke', $share->id))
+            ->assertRedirect(route('login'));
     });
 });

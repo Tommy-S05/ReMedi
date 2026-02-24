@@ -29,6 +29,7 @@ export interface Prescription {
     prescription_date?: string | null;
     prescription_date_formatted?: string | null;
     notes?: string | null;
+    accepted_shares_count?: number | null;
     created_at: string;
     updated_at: string;
     medications: PrescribedMedication[];

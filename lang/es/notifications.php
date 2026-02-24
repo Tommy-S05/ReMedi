@@ -23,4 +23,14 @@ return [
             'line_3' => 'Si no esperabas esta invitación, puedes ignorar este correo electrónico de forma segura.',
         ],
     ],
+    'share_accepted' => [
+        'email' => [
+            'subject' => ':recipientName ha aceptado tu recurso compartido',
+            'greeting' => 'Hola :name,',
+            'line_1' => "¡Buenas noticias! **:recipientName** ha aceptado el acceso a tu **:resourceType** llamado(a) **':resourceName'**.",
+            'line_2' => 'Ahora pueden ver y hacer seguimiento de este recurso.',
+            'action' => 'Ver Recurso Compartido',
+            'line_3' => 'Puedes revocar el acceso en cualquier momento desde la página de Recursos Compartidos.',
+        ],
+    ],
 ];

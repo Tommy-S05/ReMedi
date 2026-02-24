@@ -36,7 +36,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/history', [Controllers\HistoryController::class, 'index'])->name('history.index');
 
     // --- Rutas para Compartir Recursos ---
+    Route::get('/shares', [Controllers\ShareController::class, 'index'])->name('shares.index');
     Route::post('/shares', [Controllers\ShareController::class, 'store'])->name('shares.store');
+    Route::delete('/shares/{share}', [Controllers\ShareController::class, 'revoke'])->name('shares.revoke');
 
     // Rutas Api con la autenticación de Web
     Route::prefix('api')->group(function () {

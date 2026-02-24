@@ -61,6 +61,8 @@ describe('ResourceShare Model', function () {
             'shareable_id',
             'status',
             'token',
+            'status_label',
+            'shareable_type_label',
             'expires_at',
             'created_at',
             'updated_at',

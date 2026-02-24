@@ -33,7 +33,7 @@ final class PrescriptionPolicy
      */
     public function view(User $user, Prescription $prescription): bool
     {
-        return $user->id === $prescription->user_id;
+        return $user->id === $prescription->user_id || $prescription->isSharedWith($user);
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Contracts\ShareableResourceInterface;
 use App\Models\Medication;
 use App\Models\Prescription;
 use InvalidArgumentException;
@@ -22,13 +23,13 @@ final class ShareableTypeRegistry
     /**
      * Get the model class for a given shareable type string.
      *
-     * @param string $type  The shareable type string.el class string.
+     * @param string $type  The shareable type string.
+     * @return class-string<ShareableResourceInterface> The model class string.
      *
      * @throws InvalidArgumentException
      */
     public static function getModelClass(string $type): string
     {
-        // @return class-string The mod
         if (!isset(self::$types[$type])) {
             throw new InvalidArgumentException("Invalid shareable type: {$type}");
         }

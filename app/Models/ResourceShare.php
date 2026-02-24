@@ -5,12 +5,15 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\ShareStatusEnum;
+use App\Services\ShareableTypeRegistry;
 use Eloquent;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
+use Str;
 
 /**
  * App\Models\ResourceShare
@@ -20,6 +23,7 @@ use Illuminate\Support\Carbon;
  * @property int|null $shared_with_user_id
  * @property string $shared_with_email
  * @property string $shareable_type
+ * @property string $shareable_type_label
  * @property int $shareable_id
  * @property ShareStatusEnum $status
  * @property string $token
@@ -50,6 +54,11 @@ final class ResourceShare extends Model
         'expires_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'status_label',
+        'shareable_type_label',
+    ];
+
     /**
      * Get the user who owns and shared the resource.
      */
@@ -72,5 +81,29 @@ final class ResourceShare extends Model
     public function shareable(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    /**
+     * Get the human-readable label for the status.
+     *
+     * @return Attribute
+     */
+    protected function statusLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->status->label()
+        );
+    }
+
+    /**
+     * Get the human-readable label for the shareable type.
+     *
+     * @return Attribute
+     */
+    protected function shareableTypeLabel(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => Str::title(ShareableTypeRegistry::getShareableType($this->shareable_type))
+        );
     }
 }
